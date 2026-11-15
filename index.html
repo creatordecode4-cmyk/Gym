@@ -1,0 +1,1758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>IRONVAULT GYM — Enter The Vault. Leave Stronger.</title>
+<meta name="description" content="IRONVAULT GYM — premium strength & conditioning gym. 10+ years, 2500+ members, 18 expert coaches, 150+ pieces of equipment. Book your free trial today." />
+<meta name="theme-color" content="#050505" />
+<meta property="og:title" content="IRONVAULT GYM — Enter The Vault." />
+<meta property="og:description" content="Enter The Vault. Leave Stronger. Book your free trial." />
+<meta property="og:type" content="website" />
+<meta property="og:image" content="frames/frame_0001.webp" />
+
+<!--
+  ============================================================================
+  IRONVAULT GYM — single-file scroll-driven website
+  ----------------------------------------------------------------------------
+  HOW TO CUSTOMISE
+  1) BRAND / CONTACT DATA  → edit the `CONFIG` object at the top of the main
+     <script> (bottom of this file). Name, tagline, phone, WhatsApp, hours,
+     stats, founder, socials… Any element with data-cfg="key" is filled
+     from CONFIG automatically.
+  2) FRAMES PATH           → CONFIG.frames.path / ext / count / pad.
+     Default: frames/frame_0001.webp … frames/frame_0241.webp (relative path,
+     so it also works from a sub-folder or file://). Use "/frames/frame_" for
+     an absolute path. Regenerate frames from a video with:
+       ffmpeg -i hero.mp4 -c:v libwebp -quality 72 frames/frame_%04d.webp
+  3) VIDEO FALLBACK        → CONFIG.video (default "hero.mp4"). Used only if
+     the image sequence fails to load.
+  4) VIDEO TIMELINE        → CONFIG.timeline maps each of the 7 sections to a
+     point in the video (0 → 1).
+  5) COLORS / FONTS        → CSS custom properties in :root below
+     (--bg, --fg, --accent, --font-display, --font-body …).
+  6) FORM BACKEND          → set CONFIG.formEndpoint to a URL that accepts a
+     JSON POST (Formspree, Google Apps Script, your API…). Empty = demo mode.
+  ============================================================================
+-->
+
+<script>document.documentElement.classList.add('js');</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="preload" as="image" href="frames/frame_0001.webp" />
+
+<style>
+/* ==========================================================================
+   1. DESIGN TOKENS
+   ========================================================================== */
+:root{
+  --bg:#050505;
+  --bg-2:#0c0c0c;
+  --fg:#f5f5f5;
+  --muted:#a6a6a6;
+  --dim:#6d6d6d;
+  --accent:#ff3b1f;
+  --accent-2:#ff6a3d;
+  --accent-glow:rgba(255,59,31,.45);
+  --line:rgba(255,255,255,.10);
+  --line-strong:rgba(255,255,255,.18);
+  --glass:rgba(12,12,12,.58);
+  --radius:18px;
+  --radius-sm:12px;
+  --gutter:clamp(16px,4vw,64px);
+  --maxw:1280px;
+  --nav-h:72px;
+  --ease:cubic-bezier(.22,1,.36,1);
+  --font-display:"Bebas Neue",Impact,"Arial Narrow",sans-serif;
+  --font-body:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+}
+
+/* ==========================================================================
+   2. RESET & BASE
+   ========================================================================== */
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+html.lenis,html.lenis body{height:auto}
+.lenis.lenis-smooth{scroll-behavior:auto!important}
+.lenis.lenis-stopped{overflow:hidden}
+body{
+  margin:0;background:var(--bg);color:var(--fg);
+  font-family:var(--font-body);font-size:1rem;line-height:1.6;
+  -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+  overflow-x:clip; /* clip (not hidden) keeps position:sticky working */
+}
+img,svg,video,canvas{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer;background:none;border:0;padding:0}
+h1,h2,h3,h4,p,ul,ol,figure,blockquote{margin:0}
+ul{padding:0;list-style:none}
+::selection{background:var(--accent);color:#fff}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
+[hidden]{display:none!important}
+.sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.skip-link{position:fixed;left:16px;top:-60px;z-index:1000;background:var(--accent);color:#fff;padding:10px 16px;border-radius:8px;font-weight:600;transition:top .2s}
+.skip-link:focus{top:16px}
+
+/* ==========================================================================
+   3. TYPOGRAPHY
+   ========================================================================== */
+.display,.h2,.h3{font-family:var(--font-display);font-weight:400;text-transform:uppercase;letter-spacing:.005em;line-height:.9}
+.h2{font-size:clamp(2.9rem,7.2vw,6.6rem)}
+.h3{font-size:clamp(1.7rem,2.4vw,2.2rem);line-height:1}
+.accent{color:var(--accent);text-shadow:0 0 28px var(--accent-glow)}
+.eyebrow{display:inline-flex;align-items:center;gap:10px;font-size:.78rem;font-weight:600;letter-spacing:.24em;text-transform:uppercase;color:var(--accent)}
+.eyebrow::before{content:"";width:28px;height:1px;background:currentColor;box-shadow:0 0 10px var(--accent)}
+.lead{font-size:clamp(1.05rem,1.35vw,1.25rem);color:#d6d6d6;max-width:60ch}
+.muted{color:var(--muted)}
+.w{display:inline-block;will-change:auto}
+.wi{display:inline-block}
+
+/* ==========================================================================
+   4. GLOBAL OVERLAYS — grain, progress bar, cursor
+   ========================================================================== */
+.grain{
+  position:fixed;inset:-50%;z-index:90;pointer-events:none;opacity:.07;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  animation:grain 1.2s steps(6) infinite;
+}
+@keyframes grain{
+  0%{transform:translate(0,0)}20%{transform:translate(-3%,2%)}40%{transform:translate(2%,-3%)}
+  60%{transform:translate(-2%,-1%)}80%{transform:translate(3%,3%)}100%{transform:translate(0,0)}
+}
+.scroll-progress{position:fixed;top:0;left:0;right:0;height:2px;z-index:120;pointer-events:none}
+.scroll-progress span{display:block;height:100%;background:var(--accent);box-shadow:0 0 12px var(--accent);transform-origin:0 50%;transform:scaleX(0)}
+
+.cursor-dot,.cursor-ring{position:fixed;top:0;left:0;z-index:200;pointer-events:none;border-radius:50%;opacity:0;transition:opacity .3s}
+.cursor-dot{width:6px;height:6px;margin:-3px 0 0 -3px;background:var(--accent);box-shadow:0 0 10px var(--accent)}
+.cursor-ring{width:36px;height:36px;margin:-18px 0 0 -18px;border:1px solid rgba(255,59,31,.6);transition:opacity .3s,width .3s var(--ease),height .3s var(--ease),margin .3s var(--ease),background-color .3s}
+html.has-cursor .cursor-dot,html.has-cursor .cursor-ring{opacity:1}
+html.has-cursor.cursor-hover .cursor-ring{width:64px;height:64px;margin:-32px 0 0 -32px;background:rgba(255,59,31,.08)}
+html.has-cursor,html.has-cursor a,html.has-cursor button,html.has-cursor [role="slider"]{cursor:none}
+
+/* ==========================================================================
+   5. LOADER
+   ========================================================================== */
+.loader{position:fixed;inset:0;z-index:500;display:grid;place-items:center;background:var(--bg);transition:opacity .8s var(--ease),visibility .8s}
+.loader.is-done{opacity:0;visibility:hidden}
+.loader-inner{width:min(360px,80vw)}
+.loader-logo{font-family:var(--font-display);font-size:3.2rem;letter-spacing:.06em;text-align:center;margin-bottom:22px}
+.loader-logo span{color:var(--accent);text-shadow:0 0 24px var(--accent-glow)}
+.loader-bar{height:2px;background:rgba(255,255,255,.08);overflow:hidden;border-radius:2px}
+.loader-bar span{display:block;height:100%;width:100%;background:var(--accent);box-shadow:0 0 14px var(--accent);transform-origin:0 50%;transform:scaleX(0);transition:transform .25s linear}
+.loader-meta{display:flex;justify-content:space-between;margin-top:12px;font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+.loader-pct{color:var(--fg);font-variant-numeric:tabular-nums}
+
+/* ==========================================================================
+   6. NAVBAR & MOBILE MENU
+   ========================================================================== */
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;height:var(--nav-h);display:flex;align-items:center;transition:background-color .4s,border-color .4s,backdrop-filter .4s;border-bottom:1px solid transparent}
+.nav.is-scrolled{background:rgba(8,8,8,.55);-webkit-backdrop-filter:blur(14px) saturate(140%);backdrop-filter:blur(14px) saturate(140%);border-bottom-color:var(--line)}
+.nav-inner{width:100%;max-width:calc(var(--maxw) + 2*var(--gutter));margin:0 auto;padding:0 var(--gutter);display:flex;align-items:center;justify-content:space-between;gap:24px}
+.logo{display:inline-flex;align-items:center;gap:10px;white-space:nowrap;font-family:var(--font-display);font-size:1.65rem;letter-spacing:.06em;line-height:1}
+.logo svg{width:26px;height:26px;color:var(--accent);filter:drop-shadow(0 0 6px var(--accent-glow))}
+.nav-links{display:flex;gap:30px}
+.nav-links a{position:relative;font-size:.8rem;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:#cfcfcf;transition:color .25s;padding:6px 0}
+.nav-links a::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:var(--accent);transform:scaleX(0);transform-origin:right;transition:transform .35s var(--ease)}
+.nav-links a:hover,.nav-links a.is-active{color:#fff}
+.nav-links a:hover::after,.nav-links a.is-active::after{transform:scaleX(1);transform-origin:left}
+.nav-cta{display:flex;align-items:center;gap:12px}
+.burger{display:none;width:44px;height:44px;border-radius:50%;border:1px solid var(--line-strong);position:relative}
+.burger span{position:absolute;left:13px;right:13px;height:1.5px;background:#fff;transition:transform .35s var(--ease),opacity .2s}
+.burger span:nth-child(1){top:16px}.burger span:nth-child(2){top:21px}.burger span:nth-child(3){top:26px}
+.burger[aria-expanded="true"] span:nth-child(1){transform:translateY(5px) rotate(45deg)}
+.burger[aria-expanded="true"] span:nth-child(2){opacity:0}
+.burger[aria-expanded="true"] span:nth-child(3){transform:translateY(-5px) rotate(-45deg)}
+.mobile-menu{position:fixed;inset:0;z-index:95;background:rgba(5,5,5,.97);display:flex;flex-direction:column;justify-content:center;padding:calc(var(--nav-h) + 20px) var(--gutter) 40px;opacity:0;visibility:hidden;transition:opacity .4s var(--ease),visibility .4s}
+.mobile-menu.is-open{opacity:1;visibility:visible}
+.mobile-menu nav a{display:block;font-family:var(--font-display);font-size:clamp(3rem,13vw,4.5rem);line-height:1.05;letter-spacing:.01em;transform:translateY(20px);opacity:0;transition:transform .5s var(--ease),opacity .5s,color .2s}
+.mobile-menu.is-open nav a{transform:none;opacity:1}
+.mobile-menu nav a:nth-child(2){transition-delay:.04s}.mobile-menu nav a:nth-child(3){transition-delay:.08s}.mobile-menu nav a:nth-child(4){transition-delay:.12s}.mobile-menu nav a:nth-child(5){transition-delay:.16s}
+.mobile-menu nav a:hover{color:var(--accent)}
+.mobile-menu .mm-foot{margin-top:36px;display:flex;flex-direction:column;gap:14px;color:var(--muted);font-size:.95rem}
+
+/* ==========================================================================
+   7. BUTTONS (light sweep + magnetic)
+   ========================================================================== */
+.btn{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:52px;padding:0 28px;border-radius:999px;font-size:.82rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;overflow:hidden;isolation:isolate;transition:box-shadow .35s,background-color .35s,border-color .35s,color .35s;white-space:nowrap}
+.btn::before{content:"";position:absolute;top:0;bottom:0;left:-30%;width:30%;z-index:-1;background:linear-gradient(100deg,transparent,rgba(255,255,255,.45),transparent);transform:translateX(-120%) skewX(-20deg);transition:transform .8s var(--ease)}
+.btn:hover::before{transform:translateX(560%) skewX(-20deg)}
+.btn-primary{background:var(--accent);color:#fff;box-shadow:0 0 0 1px rgba(255,59,31,.6),0 10px 30px -10px var(--accent-glow)}
+.btn-primary:hover{box-shadow:0 0 0 1px var(--accent),0 0 34px var(--accent-glow)}
+.btn-primary::before{animation:sweep 5s 2s infinite}
+@keyframes sweep{0%,82%{transform:translateX(-120%) skewX(-20deg)}100%{transform:translateX(560%) skewX(-20deg)}}
+.btn-outline{border:1px solid var(--line-strong);background:rgba(10,10,10,.25);color:#fff;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.btn-outline:hover{border-color:var(--accent);box-shadow:0 0 24px -6px var(--accent-glow)}
+.btn-sm{min-height:42px;padding:0 20px;font-size:.74rem}
+.btn-block{width:100%}
+.btn svg{width:16px;height:16px}
+.magnetic{will-change:transform}
+.link-arrow{display:inline-flex;align-items:center;gap:8px;font-size:.78rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--accent)}
+.link-arrow svg{width:14px;height:14px;transition:transform .3s var(--ease)}
+.link-arrow:hover svg{transform:translateX(4px)}
+
+/* ==========================================================================
+   8. SCROLL ZONE — sticky canvas stage
+   ========================================================================== */
+.vault{position:relative}
+.stage{position:sticky;top:0;height:100vh;height:100lvh;overflow:hidden;z-index:0;background:#000;pointer-events:none}
+.stage canvas,.stage video{position:absolute;inset:0;width:100%;height:100%}
+.stage video{object-fit:cover;display:none}
+.stage.use-video video{display:block}
+.stage.use-video canvas{display:none}
+.stage-dim{position:absolute;inset:0;background:#050505;opacity:.2}
+.stage-vignette{position:absolute;inset:0;background:
+  radial-gradient(120% 90% at 50% 45%,transparent 45%,rgba(0,0,0,.75) 100%),
+  linear-gradient(180deg,rgba(5,5,5,.55) 0%,transparent 18%,transparent 70%,rgba(5,5,5,.85) 100%)}
+.vault-content{position:relative;z-index:1;margin-top:-100vh;margin-top:-100lvh}
+
+/* Section index ("01 / 07") on the left edge */
+.section-index{position:fixed;left:calc(var(--gutter) / 2 - 6px);top:50%;z-index:80;transform:translateY(-50%) rotate(180deg);writing-mode:vertical-rl;display:flex;align-items:center;gap:14px;font-size:.7rem;font-weight:600;letter-spacing:.3em;color:var(--muted);pointer-events:none;transition:opacity .4s}
+.section-index.is-hidden{opacity:0}
+.section-index .si-cur{color:var(--accent);font-variant-numeric:tabular-nums}
+.section-index .si-line{width:1px;height:48px;background:var(--line-strong)}
+.section-index .si-label{color:#ddd}
+
+/* Generic scroll sections */
+.vsec{position:relative;min-height:100vh;min-height:100lvh;padding:20vh var(--gutter) 16vh;display:flex;align-items:center}
+.container{width:100%;max-width:var(--maxw);margin:0 auto}
+.sec-head{display:grid;gap:22px;margin-bottom:clamp(36px,6vh,64px);max-width:900px}
+.sec-head.center{margin-inline:auto;text-align:center;justify-items:center}
+
+/* Glass surface */
+.glass{position:relative;background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.015)),var(--glass);border:1px solid var(--line);border-radius:var(--radius);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+
+/* Reveal system (toggled by ScrollTrigger / IntersectionObserver) */
+.js .reveal{opacity:0;transform:translate3d(0,42px,0);transition:opacity .9s var(--ease),transform .9s var(--ease);transition-delay:calc(var(--i,0) * 90ms)}
+.js .reveal.is-in{opacity:1;transform:none}
+
+/* ==========================================================================
+   9. HERO
+   ========================================================================== */
+#hero{min-height:140vh;align-items:flex-start;padding:0 var(--gutter)}
+.hero-inner{position:relative;min-height:100vh;min-height:100svh;width:100%;max-width:var(--maxw);margin:0 auto;display:flex;flex-direction:column;justify-content:flex-end;padding:calc(var(--nav-h) + 40px) 0 14vh;transform-origin:50% 70%}
+.hero-title{font-size:clamp(4.2rem,13vw,13rem);line-height:.84;margin:18px 0 22px}
+.hero-sub{font-size:clamp(1.05rem,1.6vw,1.35rem);color:#e2e2e2;max-width:40ch}
+.hero-ctas{display:flex;flex-wrap:wrap;gap:14px;margin-top:34px}
+.scroll-hint{position:absolute;right:0;bottom:14vh;display:flex;flex-direction:column;align-items:center;gap:12px;font-size:.7rem;letter-spacing:.3em;text-transform:uppercase;color:#d0d0d0}
+.scroll-hint .arrow{width:38px;height:58px;border:1px solid var(--line-strong);border-radius:999px;display:grid;place-items:center;animation:bounce 2s var(--ease) infinite}
+.scroll-hint .arrow svg{width:14px;height:14px;color:var(--accent)}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(10px)}}
+.js .hero-anim{opacity:0}
+
+/* ==========================================================================
+   10. ABOUT
+   ========================================================================== */
+.about-grid{display:grid;grid-template-columns:1.25fr .9fr;gap:clamp(32px,5vw,80px);align-items:end}
+.about-copy{display:grid;gap:26px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:clamp(40px,7vh,72px)}
+.stat{padding:24px 22px}
+.stat-num{font-family:var(--font-display);font-size:clamp(3rem,5vw,4.6rem);line-height:.9;color:#fff;font-variant-numeric:tabular-nums}
+.stat-num .suf{color:var(--accent);text-shadow:0 0 18px var(--accent-glow)}
+.stat-label{margin-top:8px;font-size:.78rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.founder{padding:26px;display:grid;gap:18px}
+.founder-top{display:flex;align-items:center;gap:16px}
+.avatar{flex:none;width:64px;height:64px;border-radius:50%;display:grid;place-items:center;font-family:var(--font-display);font-size:1.6rem;letter-spacing:.04em;background:radial-gradient(circle at 30% 25%,#3a1a14,#111 70%);border:1px solid rgba(255,59,31,.45);box-shadow:0 0 22px -6px var(--accent-glow)}
+.founder-name{font-weight:600}
+.founder-role{font-size:.8rem;color:var(--muted);letter-spacing:.06em}
+.founder blockquote{font-size:1.06rem;line-height:1.55;color:#e8e8e8;font-style:italic}
+.founder blockquote::before{content:"“";display:block;font-family:var(--font-display);font-style:normal;font-size:3.4rem;line-height:.6;color:var(--accent);margin-bottom:8px}
+.badge-note{display:inline-flex;font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--accent)}
+
+/* ==========================================================================
+   11. FACILITIES
+   ========================================================================== */
+.fac-wrap{display:grid;grid-template-columns:.8fr 2fr;gap:clamp(24px,4vw,56px);align-items:start}
+.fac-highlight{padding:30px;position:sticky;top:calc(var(--nav-h) + 40px)}
+.fac-highlight .big{font-family:var(--font-display);font-size:clamp(5rem,9vw,8.5rem);line-height:.82;color:var(--accent);text-shadow:0 0 40px var(--accent-glow)}
+.fac-highlight p{margin-top:10px;color:#ddd}
+.fac-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.fac-card{padding:26px 22px 24px;display:grid;gap:12px;align-content:start;transition:border-color .35s,box-shadow .35s}
+.fac-card:hover{border-color:rgba(255,59,31,.45);box-shadow:0 0 34px -12px var(--accent-glow)}
+.icon{width:46px;height:46px;border-radius:12px;display:grid;place-items:center;background:rgba(255,59,31,.1);border:1px solid rgba(255,59,31,.3);color:var(--accent)}
+.icon svg{width:24px;height:24px}
+.fac-card h3{font-size:1.02rem;font-weight:600;letter-spacing:.01em}
+.fac-card p{font-size:.92rem;color:var(--muted);line-height:1.55}
+
+/* ==========================================================================
+   12. PROGRAMS (grid on desktop, swipe carousel on mobile)
+   ========================================================================== */
+.h-scroll{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.program{padding:28px 24px;display:flex;flex-direction:column;gap:16px;transition:transform .45s var(--ease),border-color .35s,box-shadow .45s}
+.program:hover,.program:focus-within{transform:translateY(-10px);border-color:rgba(255,59,31,.55);box-shadow:0 24px 50px -20px var(--accent-glow),0 0 0 1px rgba(255,59,31,.25)}
+.program-num{font-family:var(--font-display);font-size:1.2rem;color:var(--accent);letter-spacing:.1em}
+.program .meta{display:grid;gap:6px;font-size:.86rem;color:var(--muted);padding-bottom:16px;border-bottom:1px solid var(--line)}
+.program .meta b{color:#fff;font-weight:600}
+.checks{display:grid;gap:10px;font-size:.93rem;color:#dedede}
+.checks li{display:flex;gap:10px;align-items:flex-start}
+.checks li::before{content:"";flex:none;width:16px;height:16px;margin-top:4px;border-radius:50%;background:rgba(255,59,31,.15) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path d='M4.5 8.2l2.2 2.2 4.8-4.8' fill='none' stroke='%23ff3b1f' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/></svg>") center/100% no-repeat}
+.program .link-arrow{margin-top:auto;padding-top:6px}
+
+/* ==========================================================================
+   13. TRAINERS
+   ========================================================================== */
+.trainer{overflow:hidden;padding:0;transition:border-color .35s,box-shadow .45s}
+.trainer:hover,.trainer:focus-within{border-color:rgba(255,59,31,.45);box-shadow:0 0 40px -14px var(--accent-glow)}
+.trainer-photo{position:relative;aspect-ratio:4/5;display:grid;place-items:center;overflow:hidden;background:
+  radial-gradient(80% 60% at 50% 20%,rgba(255,59,31,.22),transparent 70%),
+  linear-gradient(180deg,#1a1a1a,#0a0a0a)}
+.trainer-photo .initials{font-family:var(--font-display);font-size:5rem;color:rgba(255,255,255,.12);letter-spacing:.04em}
+.trainer-photo .ph{position:absolute;top:12px;left:12px;font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--dim)}
+.trainer-photo .ig{position:absolute;left:12px;right:12px;bottom:12px;display:flex;align-items:center;justify-content:center;gap:8px;min-height:44px;border-radius:999px;background:rgba(5,5,5,.75);border:1px solid rgba(255,59,31,.5);font-size:.74rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;transform:translateY(calc(100% + 16px));transition:transform .45s var(--ease),background-color .3s}
+.trainer-photo .ig svg{width:16px;height:16px;color:var(--accent)}
+.trainer:hover .ig,.trainer:focus-within .ig{transform:none}
+.trainer-photo .ig:hover{background:var(--accent)}
+.trainer-photo .ig:hover svg{color:#fff}
+.trainer-body{padding:20px 20px 22px;display:grid;gap:6px}
+.trainer-body h3{font-family:var(--font-display);font-size:1.9rem;font-weight:400;letter-spacing:.02em;line-height:1}
+.trainer-spec{color:var(--accent);font-size:.82rem;font-weight:600;letter-spacing:.06em}
+.trainer-meta{font-size:.84rem;color:var(--muted)}
+.certs{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.certs span{font-size:.66rem;font-weight:600;letter-spacing:.12em;padding:5px 9px;border-radius:999px;border:1px solid var(--line-strong);color:#ccc}
+@media (hover:none){.trainer-photo .ig{transform:none}}
+
+/* ==========================================================================
+   14. RESULTS — before/after + testimonials
+   ========================================================================== */
+.results-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(24px,4vw,56px);align-items:center}
+.ba{position:relative;aspect-ratio:6/7;max-height:72vh;width:100%;overflow:hidden;border-radius:var(--radius);border:1px solid var(--line);touch-action:pan-y;-webkit-user-select:none;user-select:none;--pos:50%;background:#111}
+.ba img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none}
+.ba-before{clip-path:inset(0 calc(100% - var(--pos)) 0 0)}
+.ba-tag{position:absolute;top:14px;z-index:2;font-size:.66rem;font-weight:700;letter-spacing:.22em;padding:7px 11px;border-radius:999px;background:rgba(5,5,5,.7);border:1px solid var(--line-strong)}
+.ba-tag.l{left:14px}.ba-tag.r{right:14px;border-color:rgba(255,59,31,.6);color:var(--accent)}
+.ba-line{position:absolute;top:0;bottom:0;left:var(--pos);width:2px;margin-left:-1px;background:var(--accent);box-shadow:0 0 14px var(--accent);z-index:2}
+.ba-knob{position:absolute;top:50%;left:var(--pos);z-index:3;width:54px;height:54px;margin:-27px 0 0 -27px;border-radius:50%;background:var(--accent);color:#fff;display:grid;place-items:center;box-shadow:0 0 0 6px rgba(255,59,31,.18),0 0 30px var(--accent-glow);touch-action:none}
+.ba-knob svg{width:22px;height:22px}
+.ba-caption{margin-top:14px;font-size:.86rem;color:var(--muted)}
+
+.testi{padding:30px;overflow:hidden}
+.testi-viewport{overflow:hidden}
+.testi-track{display:flex;transition:transform .7s var(--ease)}
+.testi-slide{flex:0 0 100%;display:grid;gap:18px;padding-right:4px}
+.stars{display:flex;gap:4px;color:var(--accent)}
+.stars svg{width:18px;height:18px;filter:drop-shadow(0 0 6px var(--accent-glow))}
+.testi-result{font-family:var(--font-display);font-size:clamp(2.2rem,3.6vw,3.2rem);line-height:.95}
+.testi-quote{font-size:1.05rem;color:#dcdcdc;line-height:1.6}
+.testi-who{display:flex;align-items:center;gap:12px;font-size:.9rem}
+.testi-who .avatar{width:44px;height:44px;font-size:1.1rem}
+.testi-who small{display:block;color:var(--muted)}
+.testi-ctrl{display:flex;align-items:center;justify-content:space-between;margin-top:26px;padding-top:20px;border-top:1px solid var(--line)}
+.dots{display:flex;gap:8px}
+.dots button{width:28px;height:28px;display:grid;place-items:center}
+.dots button::before{content:"";width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.25);transition:background-color .3s,width .3s,border-radius .3s}
+.dots button[aria-current="true"]::before{background:var(--accent);width:22px;border-radius:4px;box-shadow:0 0 10px var(--accent)}
+.icon-btn{width:44px;height:44px;border-radius:50%;border:1px solid var(--line-strong);display:grid;place-items:center;transition:border-color .3s}
+.icon-btn:hover{border-color:var(--accent)}
+.icon-btn svg{width:16px;height:16px}
+
+/* ==========================================================================
+   15. PRICING + FORM
+   ========================================================================== */
+#pricing{flex-direction:column;align-items:stretch;padding-bottom:10vh}
+.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;align-items:center}
+.price{padding:34px 28px;display:flex;flex-direction:column;gap:20px}
+.price-name{font-size:.8rem;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:var(--muted)}
+.price-amt{font-family:var(--font-display);font-size:clamp(3.4rem,5vw,4.6rem);line-height:.9}
+.price-amt small{font-family:var(--font-body);font-size:.85rem;color:var(--muted);letter-spacing:.04em;margin-left:4px}
+.price-save{font-size:.82rem;color:var(--accent);font-weight:600;min-height:1.3em}
+.price .checks{padding-top:20px;border-top:1px solid var(--line);flex:1}
+.price.popular{transform:scale(1.05);border-color:rgba(255,59,31,.7);box-shadow:0 0 0 1px rgba(255,59,31,.4),0 0 60px -12px var(--accent-glow),inset 0 0 40px -20px var(--accent-glow);z-index:1}
+.pop-badge{position:absolute;top:-13px;left:50%;transform:translateX(-50%);padding:6px 14px;border-radius:999px;background:var(--accent);font-size:.66rem;font-weight:700;letter-spacing:.2em;white-space:nowrap;box-shadow:0 0 22px var(--accent-glow)}
+
+.trial{margin-top:clamp(56px,10vh,110px);display:grid;grid-template-columns:.9fr 1.1fr;gap:clamp(24px,4vw,64px);align-items:center}
+.trial-copy{display:grid;gap:18px}
+.trial-perks{display:grid;gap:10px;margin-top:6px}
+.form{padding:clamp(22px,3vw,36px);display:grid;gap:16px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.field{display:grid;gap:7px}
+.field label{font-size:.74rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:#cfcfcf}
+.field input,.field select{width:100%;min-height:52px;padding:0 16px;border-radius:12px;background:rgba(0,0,0,.45);border:1px solid var(--line-strong);transition:border-color .25s,box-shadow .25s;font-size:1rem;-webkit-appearance:none;appearance:none}
+.field select{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path d='M4 6l4 4 4-4' fill='none' stroke='%23ff3b1f' stroke-width='1.6' stroke-linecap='round'/></svg>");background-repeat:no-repeat;background-position:right 14px center;background-size:16px;padding-right:40px}
+.field select option{background:#111;color:#fff}
+.field input::placeholder{color:#6b6b6b}
+.field input:focus,.field select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(255,59,31,.2)}
+.field [aria-invalid="true"]{border-color:#ff5a45;box-shadow:0 0 0 3px rgba(255,59,31,.15)}
+.err{min-height:1.1em;font-size:.8rem;color:#ff7a66}
+.plan-note{font-size:.85rem;color:var(--muted)}
+.plan-note b{color:var(--accent)}
+.form-success{padding:clamp(28px,3vw,40px);display:grid;gap:14px;text-align:center;justify-items:center}
+.form-success .tick{width:64px;height:64px;border-radius:50%;display:grid;place-items:center;background:var(--accent);box-shadow:0 0 40px var(--accent-glow)}
+.form-success .tick svg{width:30px;height:30px}
+.form-legal{font-size:.75rem;color:var(--dim)}
+
+/* ==========================================================================
+   16. FAQ + FOOTER (normal flow, after the canvas unpins)
+   ========================================================================== */
+.faq{position:relative;z-index:2;background:var(--bg);padding:clamp(80px,14vh,160px) var(--gutter)}
+.faq::before{content:"";position:absolute;left:0;right:0;top:-160px;height:160px;background:linear-gradient(180deg,transparent,var(--bg));pointer-events:none}
+.faq-grid{display:grid;grid-template-columns:.8fr 1.2fr;gap:clamp(32px,5vw,80px);align-items:start}
+.acc-item{border-bottom:1px solid var(--line)}
+.acc-item:first-child{border-top:1px solid var(--line)}
+.acc-btn{width:100%;display:flex;justify-content:space-between;align-items:center;gap:20px;padding:24px 0;text-align:left;font-size:clamp(1.02rem,1.4vw,1.18rem);font-weight:600}
+.acc-btn .pm{flex:none;position:relative;width:32px;height:32px;border-radius:50%;border:1px solid var(--line-strong);transition:border-color .3s,background-color .3s,transform .4s var(--ease)}
+.acc-btn .pm::before,.acc-btn .pm::after{content:"";position:absolute;left:50%;top:50%;width:12px;height:1.5px;margin:-.75px 0 0 -6px;background:#fff;transition:transform .4s var(--ease)}
+.acc-btn .pm::after{transform:rotate(90deg)}
+.acc-btn[aria-expanded="true"] .pm{background:var(--accent);border-color:var(--accent)}
+.acc-btn[aria-expanded="true"] .pm::after{transform:rotate(0)}
+.acc-btn:hover .pm{border-color:var(--accent)}
+.acc-panel{display:grid;grid-template-rows:0fr;transition:grid-template-rows .45s var(--ease)}
+.acc-panel>div{overflow:hidden}
+.acc-panel p{padding:0 48px 24px 0;color:var(--muted)}
+.acc-item.is-open .acc-panel{grid-template-rows:1fr}
+
+.footer{position:relative;z-index:2;background:#030303;border-top:1px solid var(--line);padding:clamp(60px,10vh,100px) var(--gutter) 28px}
+.footer-grid{display:grid;grid-template-columns:1.2fr 1fr 1fr 1.3fr;gap:clamp(28px,4vw,56px)}
+.footer h3{font-size:.74rem;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);margin-bottom:16px}
+.footer p,.footer li{color:#cfcfcf;font-size:.95rem}
+.footer li+li{margin-top:8px}
+.footer a:hover{color:var(--accent)}
+.socials{display:flex;gap:10px;margin-top:20px}
+.socials a{width:44px;height:44px;border-radius:50%;border:1px solid var(--line-strong);display:grid;place-items:center;transition:border-color .3s,box-shadow .3s,color .3s}
+.socials a:hover{border-color:var(--accent);box-shadow:0 0 20px -4px var(--accent-glow)}
+.socials svg{width:18px;height:18px}
+.map{position:relative;aspect-ratio:16/10;border-radius:var(--radius-sm);overflow:hidden;border:1px solid var(--line);background:
+  linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px) 0 0/28px 28px,
+  linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px) 0 0/28px 28px,#0b0b0b;display:grid;place-items:center;text-align:center;font-size:.8rem;color:var(--muted)}
+.map iframe{position:absolute;inset:0;width:100%;height:100%;border:0;filter:grayscale(1) invert(.92) contrast(.9)}
+.map .pin{width:22px;height:22px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:var(--accent);box-shadow:0 0 24px var(--accent);margin:0 auto 12px}
+.footer-bottom{max-width:var(--maxw);margin:clamp(40px,7vh,72px) auto 0;padding-top:24px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;font-size:.8rem;color:var(--dim)}
+.footer-mega{font-family:var(--font-display);font-size:clamp(4rem,17vw,16rem);line-height:.8;text-align:center;color:transparent;-webkit-text-stroke:1px rgba(255,255,255,.08);margin-top:clamp(40px,6vh,64px);user-select:none;letter-spacing:.02em;white-space:nowrap;overflow:hidden}
+
+/* WhatsApp floating button */
+.wa-float{position:fixed;right:18px;bottom:18px;z-index:110;width:58px;height:58px;border-radius:50%;display:grid;place-items:center;background:#25d366;color:#fff;box-shadow:0 10px 30px -6px rgba(37,211,102,.6);transition:transform .3s var(--ease)}
+.wa-float:hover{transform:scale(1.08)}
+.wa-float svg{width:28px;height:28px}
+.wa-float::after{content:"";position:absolute;inset:0;border-radius:50%;border:2px solid #25d366;animation:ping 2.4s var(--ease) infinite}
+@keyframes ping{0%{transform:scale(1);opacity:.7}100%{transform:scale(1.6);opacity:0}}
+
+/* ==========================================================================
+   17. RESPONSIVE
+   ========================================================================== */
+@media (max-width:1100px){
+  .nav-links{gap:20px}
+  .fac-grid{grid-template-columns:repeat(2,1fr)}
+  .h-scroll{grid-template-columns:repeat(2,1fr)}
+  .footer-grid{grid-template-columns:1fr 1fr}
+}
+@media (max-width:960px){
+  .nav-links,.nav-cta .btn{display:none}
+  .burger{display:block}
+  .section-index{display:none}
+  .about-grid,.fac-wrap,.results-grid,.trial,.faq-grid{grid-template-columns:1fr}
+  .fac-highlight{position:relative;top:auto}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .pricing-grid{grid-template-columns:1fr;gap:26px;max-width:520px;margin:0 auto}
+  .price.popular{transform:none}
+  .ba{max-height:none}
+}
+@media (max-width:720px){
+  body{font-size:1.0625rem}
+  .nav .logo{font-size:1.4rem}
+  .vsec{padding:16vh var(--gutter) 12vh}
+  .hero-title{font-size:clamp(4.2rem,20vw,7rem)}
+  .hero-inner{padding-bottom:12vh}
+  .hero-ctas .btn{flex:1 1 100%}
+  .scroll-hint{position:static;flex-direction:row;margin-top:30px}
+  .scroll-hint .arrow{width:30px;height:46px}
+  .h2{font-size:clamp(3rem,13vw,4.4rem)}
+  .fac-grid{grid-template-columns:1fr}
+  /* swipeable carousels */
+  .h-scroll{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:14px;margin:0 calc(var(--gutter) * -1);padding:12px var(--gutter) 22px;scrollbar-width:none;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
+  .h-scroll::-webkit-scrollbar{display:none}
+  .h-scroll>*{flex:0 0 84%;scroll-snap-align:center}
+  .program:hover{transform:none}
+  .form-row{grid-template-columns:1fr}
+  .footer-grid{grid-template-columns:1fr}
+  .acc-panel p{padding-right:0}
+  .swipe-hint{display:flex!important}
+}
+.swipe-hint{display:none;align-items:center;gap:8px;font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-top:-18px;margin-bottom:6px}
+
+/* ==========================================================================
+   18. REDUCED MOTION
+   ========================================================================== */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important}
+  .grain{animation:none}
+  .js .reveal{transform:none;transition:opacity .3s}
+  .program:hover,.program:focus-within{transform:none}
+  .testi-track{transition:none}
+  .js .hero-anim{opacity:1}
+}
+</style>
+</head>
+
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<!-- ============ LOADER ============ -->
+<div class="loader" id="loader" role="progressbar" aria-label="Loading the gym tour" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+  <div class="loader-inner">
+    <div class="loader-logo" aria-hidden="true">IRON<span>VAULT</span></div>
+    <div class="loader-bar"><span id="loaderBar"></span></div>
+    <div class="loader-meta"><span>Unlocking the vault</span><span class="loader-pct" id="loaderPct">0%</span></div>
+  </div>
+</div>
+<noscript><style>.loader{display:none}.js .reveal,.js .hero-anim{opacity:1;transform:none}</style></noscript>
+
+<div class="scroll-progress" aria-hidden="true"><span id="scrollBar"></span></div>
+<div class="grain" aria-hidden="true"></div>
+<div class="cursor-dot" aria-hidden="true"></div>
+<div class="cursor-ring" aria-hidden="true"></div>
+
+<!-- ============ NAVBAR ============ -->
+<header class="nav" id="nav">
+  <div class="nav-inner">
+    <a href="#hero" class="logo" aria-label="IRONVAULT GYM — back to top">
+      <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="26" height="26" rx="3"/><circle cx="16" cy="16" r="6.5"/><path d="M16 9.5v-3M16 25.5v-3M9.5 16h-3M25.5 16h-3"/></svg>
+      <span data-cfg="name">IRONVAULT GYM</span>
+    </a>
+    <nav aria-label="Primary">
+      <ul class="nav-links">
+        <li><a href="#about" data-nav="about">Experience</a></li>
+        <li><a href="#facilities" data-nav="facilities">Facilities</a></li>
+        <li><a href="#programs" data-nav="programs">Programs</a></li>
+        <li><a href="#results" data-nav="results">Results</a></li>
+        <li><a href="#pricing" data-nav="pricing">Pricing</a></li>
+      </ul>
+    </nav>
+    <div class="nav-cta">
+      <a href="#pricing" class="btn btn-primary btn-sm magnetic">Join Now</a>
+      <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+
+<div class="mobile-menu" id="mobileMenu" aria-hidden="true" inert>
+  <nav aria-label="Mobile">
+    <a href="#about">Experience</a>
+    <a href="#facilities">Facilities</a>
+    <a href="#programs">Programs</a>
+    <a href="#results">Results</a>
+    <a href="#pricing">Pricing</a>
+  </nav>
+  <div class="mm-foot">
+    <a href="#trial" class="btn btn-primary">Start Free Trial</a>
+    <a data-cfg-href="tel"><span data-cfg="phone">+91 00000 00000</span></a>
+    <span data-cfg="hours">5 AM – 11 PM, all 7 days</span>
+  </div>
+</div>
+
+<aside class="section-index" id="sectionIndex" aria-hidden="true">
+  <span><span class="si-cur" id="siCur">01</span> / <span id="siTotal">07</span></span>
+  <span class="si-line"></span>
+  <span class="si-label" id="siLabel">Enter</span>
+</aside>
+
+<main id="main">
+  <!-- =====================================================================
+       SCROLL ZONE: sticky canvas + overlaid sections
+       ===================================================================== -->
+  <div class="vault" id="vault">
+    <div class="stage" id="stage" aria-hidden="true">
+      <canvas id="seq"></canvas>
+      <!-- Fallback (only used if frames fail). src is injected by JS to avoid downloading it twice. -->
+      <video id="fallbackVideo" muted playsinline preload="none" tabindex="-1"></video>
+      <div class="stage-dim" id="stageDim"></div>
+      <div class="stage-vignette"></div>
+    </div>
+
+    <div class="vault-content">
+
+      <!-- 01 — HERO (0–10%) -->
+      <section class="vsec" id="hero" data-label="Enter" aria-label="Welcome">
+        <div class="hero-inner" id="heroInner">
+          <p class="eyebrow hero-anim">Est. <span data-cfg="established">2014</span> · <span data-cfg="city">Your City</span></p>
+          <h1 class="display hero-title split" id="heroTitle">Enter the <span class="accent">Vault.</span></h1>
+          <p class="hero-sub hero-anim" data-cfg="tagline">Enter The Vault. Leave Stronger.</p>
+          <div class="hero-ctas hero-anim">
+            <a href="#trial" class="btn btn-primary magnetic">Start Free Trial
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
+            <button type="button" class="btn btn-outline magnetic" id="tourBtn" aria-label="Watch the tour: auto-scroll through the gym">
+              <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M4 2.5v11l9-5.5z"/></svg>Watch the Tour</button>
+          </div>
+          <a href="#about" class="scroll-hint hero-anim" aria-label="Scroll to enter the gym">
+            <span>Scroll to enter</span>
+            <span class="arrow"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M8 2v12M3 9l5 5 5-5"/></svg></span>
+          </a>
+        </div>
+      </section>
+
+      <!-- 02 — ABOUT & EXPERIENCE (10–25%) -->
+      <section class="vsec" id="about" data-label="Story" aria-labelledby="aboutTitle">
+        <div class="container">
+          <div class="about-grid">
+            <div class="about-copy">
+              <p class="eyebrow reveal">Since <span data-cfg="established">2014</span></p>
+              <h2 class="h2 split" id="aboutTitle"><span data-cfg="yearsExperience">10+</span> years of building <span class="accent">stronger</span> people.</h2>
+              <p class="lead reveal" style="--i:1">We opened in <span data-cfg="established">2014</span> with one mission: <strong>real results, no shortcuts.</strong> No gimmicks, no crash diets, no “mirror-only” culture — just honest coaching, heavy iron and a community that shows up every single day. A decade later, the Vault is home to thousands who walked in doubting themselves and walked out stronger.</p>
+            </div>
+            <figure class="glass founder reveal" style="--i:2" data-parallax="0.6">
+              <div class="founder-top">
+                <div class="avatar" aria-hidden="true" data-cfg="founder.initials">VR</div>
+                <figcaption>
+                  <span class="badge-note">Founder’s note</span>
+                  <div class="founder-name" data-cfg="founder.name">Vikram Rao</div>
+                  <div class="founder-role" data-cfg="founder.role">Founder &amp; Head Coach</div>
+                </figcaption>
+              </div>
+              <blockquote data-cfg="founder.quote">I didn’t build a gym, I built the place I wished existed when I started. Show up, trust the process — we’ll handle the rest.</blockquote>
+            </figure>
+          </div>
+
+          <div class="stats" role="list">
+            <div class="glass stat reveal" role="listitem" style="--i:0"><div class="stat-num" data-count="yearsExperience">0</div><div class="stat-label">Years Experience</div></div>
+            <div class="glass stat reveal" role="listitem" style="--i:1"><div class="stat-num" data-count="members">0</div><div class="stat-label">Active Members</div></div>
+            <div class="glass stat reveal" role="listitem" style="--i:2"><div class="stat-num" data-count="trainers">0</div><div class="stat-label">Expert Trainers</div></div>
+            <div class="glass stat reveal" role="listitem" style="--i:3"><div class="stat-num" data-count="transformations">0</div><div class="stat-label">Transformations</div></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 03 — FACILITIES (25–42%) -->
+      <section class="vsec" id="facilities" data-label="Facilities" aria-labelledby="facTitle">
+        <div class="container">
+          <div class="sec-head">
+            <p class="eyebrow reveal">The Floor</p>
+            <h2 class="h2 split" id="facTitle">Built for <span class="accent">serious</span> training.</h2>
+          </div>
+          <div class="fac-wrap">
+            <div class="glass fac-highlight reveal" data-parallax="0.5">
+              <div class="big"><span data-cfg="equipmentPieces">150+</span></div>
+              <p><strong>pieces of equipment</strong> — commercial-grade, calibrated and maintained daily. No waiting, no wobbly benches.</p>
+            </div>
+            <div class="fac-grid">
+              <article class="glass fac-card reveal" style="--i:0">
+                <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M6 7v10M3 9.5v5M18 7v10M21 9.5v5M6 12h12"/></svg></div>
+                <h3>Free Weights Zone</h3>
+                <p>Rubber hex &amp; pro-style dumbbells from 2.5 to 60 kg, adjustable benches and full mirror walls.</p>
+              </article>
+              <article class="glass fac-card reveal" style="--i:1">
+                <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M5 21V3M19 21V3M2 9h20M8 7v4M16 7v4M3 21h4M17 21h4"/></svg></div>
+                <h3>Power Racks &amp; Platforms</h3>
+                <p>Competition power racks, calibrated plates, deadlift platforms and specialty bars.</p>
+              </article>
+              <article class="glass fac-card reveal" style="--i:2">
+                <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12h4l2.5-6 4 12 2.5-6H22"/></svg></div>
+                <h3>Cardio Floor</h3>
+                <p>Treadmills, air bikes, rowers, stair climbers and ski-ergs — with heart-rate tracking.</p>
+              </article>
+              <article class="glass fac-card reveal" style="--i:3">
+                <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="15" r="6"/><path d="M8.5 10.2V7.5a3.5 3.5 0 0 1 7 0v2.7"/></svg></div>
+                <h3>Functional &amp; CrossFit Zone</h3>
+                <p>Rigs, kettlebells, sleds, battle ropes, wall balls and a 20 m turf lane.</p>
+              </article>
+              <article class="glass fac-card reveal" style="--i:4">
+                <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3c-1.5 2 1.5 3.5 0 6M12 3c-1.5 2 1.5 3.5 0 6M16 3c-1.5 2 1.5 3.5 0 6M3 13h18v4a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3z"/></svg></div>
+                <h3>Steam &amp; Recovery Room</h3>
+                <p>Steam bath, foam-roll &amp; stretch area and percussion massage guns to recover faster.</p>
+              </article>
+              <article class="glass fac-card reveal" style="--i:5">
+                <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="1.5"/><path d="M12 3v18M8.5 8h1M14.5 8h1M9 14v1.5M15 14v1.5"/></svg></div>
+                <h3>Premium Lockers &amp; Showers</h3>
+                <p>Digital-lock lockers, hot showers, toiletries and hair-dryers. Walk in from work, walk out fresh.</p>
+              </article>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 04 — PROGRAMS (42–58%) -->
+      <section class="vsec" id="programs" data-label="Programs" aria-labelledby="progTitle">
+        <div class="container">
+          <div class="sec-head">
+            <p class="eyebrow reveal">Programs</p>
+            <h2 class="h2 split" id="progTitle">Pick your <span class="accent">battle.</span></h2>
+          </div>
+          <p class="swipe-hint" aria-hidden="true">Swipe <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 8h10M9 4l4 4-4 4"/></svg></p>
+          <div class="h-scroll" role="list" aria-label="Training programs">
+            <article class="glass program reveal" role="listitem" style="--i:0">
+              <span class="program-num">01</span>
+              <h3 class="h3">Fat Loss</h3>
+              <div class="meta"><span><b>Duration:</b> 12 weeks</span><span><b>For:</b> anyone who wants to drop fat and keep it off for good.</span></div>
+              <ul class="checks"><li>Metabolic conditioning 4× / week</li><li>Weekly body-composition check-ins</li><li>Indian-friendly diet plan</li></ul>
+              <a href="#trial" class="link-arrow" data-goal="Fat Loss">Learn more <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg><span class="sr-only"> about Fat Loss</span></a>
+            </article>
+            <article class="glass program reveal" role="listitem" style="--i:1">
+              <span class="program-num">02</span>
+              <h3 class="h3">Muscle Gain</h3>
+              <div class="meta"><span><b>Duration:</b> 16 weeks</span><span><b>For:</b> beginners &amp; intermediates who want real size.</span></div>
+              <ul class="checks"><li>Progressive hypertrophy split</li><li>Protein-first nutrition guide</li><li>Form review every 2 weeks</li></ul>
+              <a href="#trial" class="link-arrow" data-goal="Muscle Gain">Learn more <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg><span class="sr-only"> about Muscle Gain</span></a>
+            </article>
+            <article class="glass program reveal" role="listitem" style="--i:2">
+              <span class="program-num">03</span>
+              <h3 class="h3">Strength &amp; Powerlifting</h3>
+              <div class="meta"><span><b>Duration:</b> 12-week blocks</span><span><b>For:</b> lifters chasing a bigger squat, bench &amp; deadlift.</span></div>
+              <ul class="checks"><li>Periodised, RPE-based programming</li><li>Competition-standard platforms</li><li>Technique video analysis</li></ul>
+              <a href="#trial" class="link-arrow" data-goal="Strength &amp; Powerlifting">Learn more <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg><span class="sr-only"> about Strength and Powerlifting</span></a>
+            </article>
+            <article class="glass program reveal" role="listitem" style="--i:3">
+              <span class="program-num">04</span>
+              <h3 class="h3">Personal Training</h3>
+              <div class="meta"><span><b>Duration:</b> flexible, 1-on-1</span><span><b>For:</b> anyone who wants maximum accountability.</span></div>
+              <ul class="checks"><li>Fully custom training plan</li><li>1:1 coaching every session</li><li>Direct WhatsApp support</li></ul>
+              <a href="#trial" class="link-arrow" data-goal="Personal Training">Learn more <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg><span class="sr-only"> about Personal Training</span></a>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- 05 — TRAINERS (58–72%) — names/certs are placeholders -->
+      <section class="vsec" id="trainers" data-label="Coaches" aria-labelledby="trainTitle">
+        <div class="container">
+          <div class="sec-head">
+            <p class="eyebrow reveal">The Coaches</p>
+            <h2 class="h2 split" id="trainTitle">Coaches who’ve <span class="accent">been there.</span></h2>
+          </div>
+          <p class="swipe-hint" aria-hidden="true">Swipe <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 8h10M9 4l4 4-4 4"/></svg></p>
+          <div class="h-scroll" role="list" aria-label="Our trainers">
+            <article class="glass trainer reveal" role="listitem" style="--i:0">
+              <div class="trainer-photo" role="img" aria-label="Photo placeholder for coach Arjun Mehta">
+                <span class="ph">Photo</span><span class="initials" aria-hidden="true">AM</span>
+                <a class="ig" href="https://instagram.com/" target="_blank" rel="noopener" aria-label="Arjun Mehta on Instagram (opens in new tab)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg>Instagram</a>
+              </div>
+              <div class="trainer-body"><h3>Arjun Mehta</h3><span class="trainer-spec">Strength &amp; Powerlifting</span><span class="trainer-meta">9 years experience</span><div class="certs"><span>NASM-CPT</span><span>IPF L1</span></div></div>
+            </article>
+            <article class="glass trainer reveal" role="listitem" style="--i:1">
+              <div class="trainer-photo" role="img" aria-label="Photo placeholder for coach Sana Qureshi">
+                <span class="ph">Photo</span><span class="initials" aria-hidden="true">SQ</span>
+                <a class="ig" href="https://instagram.com/" target="_blank" rel="noopener" aria-label="Sana Qureshi on Instagram (opens in new tab)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg>Instagram</a>
+              </div>
+              <div class="trainer-body"><h3>Sana Qureshi</h3><span class="trainer-spec">Fat Loss &amp; Conditioning</span><span class="trainer-meta">7 years experience</span><div class="certs"><span>ACE-CPT</span><span>PN L1</span></div></div>
+            </article>
+            <article class="glass trainer reveal" role="listitem" style="--i:2">
+              <div class="trainer-photo" role="img" aria-label="Photo placeholder for coach Rahul Verma">
+                <span class="ph">Photo</span><span class="initials" aria-hidden="true">RV</span>
+                <a class="ig" href="https://instagram.com/" target="_blank" rel="noopener" aria-label="Rahul Verma on Instagram (opens in new tab)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg>Instagram</a>
+              </div>
+              <div class="trainer-body"><h3>Rahul Verma</h3><span class="trainer-spec">Bodybuilding &amp; Hypertrophy</span><span class="trainer-meta">11 years experience</span><div class="certs"><span>ISSA-CFT</span><span>Sports Nutrition</span></div></div>
+            </article>
+            <article class="glass trainer reveal" role="listitem" style="--i:3">
+              <div class="trainer-photo" role="img" aria-label="Photo placeholder for coach Meera Iyer">
+                <span class="ph">Photo</span><span class="initials" aria-hidden="true">MI</span>
+                <a class="ig" href="https://instagram.com/" target="_blank" rel="noopener" aria-label="Meera Iyer on Instagram (opens in new tab)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg>Instagram</a>
+              </div>
+              <div class="trainer-body"><h3>Meera Iyer</h3><span class="trainer-spec">Mobility &amp; Women’s Strength</span><span class="trainer-meta">6 years experience</span><div class="certs"><span>NASM-CES</span><span>ACE</span></div></div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- 06 — RESULTS (72–84%) -->
+      <section class="vsec" id="results" data-label="Results" aria-labelledby="resTitle">
+        <div class="container">
+          <div class="sec-head">
+            <p class="eyebrow reveal">Transformations</p>
+            <h2 class="h2 split" id="resTitle">Real people. <span class="accent">Real results.</span></h2>
+          </div>
+          <div class="results-grid">
+            <div class="reveal" data-parallax="0.4">
+              <div class="ba" id="ba">
+                <img id="baAfter" alt="After photo: member after 9 months of training (placeholder)" width="600" height="700" />
+                <img id="baBefore" class="ba-before" alt="Before photo: member at the start of training (placeholder)" width="600" height="700" />
+                <span class="ba-tag l">Before</span><span class="ba-tag r">After</span>
+                <span class="ba-line" aria-hidden="true"></span>
+                <button type="button" class="ba-knob" id="baKnob" role="slider" aria-label="Before and after comparison" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" aria-valuetext="50% before">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 6l-6 6 6 6M15 6l6 6-6 6"/></svg>
+                </button>
+              </div>
+              <p class="ba-caption">Rahul, 34 — 22 kg down in 9 months. <span class="muted">(Placeholder images — drag to compare.)</span></p>
+            </div>
+
+            <div class="glass testi reveal" style="--i:1" id="testi" role="region" aria-roledescription="carousel" aria-label="Member testimonials">
+              <div class="testi-viewport">
+                <div class="testi-track" id="testiTrack" aria-live="off">
+                  <figure class="testi-slide" role="group" aria-roledescription="slide" aria-label="1 of 3">
+                    <div class="stars" aria-label="Rated 5 out of 5"><svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L10 14.9l-5.2 2.7 1-5.8L1.5 7.7l5.9-.9z"/></svg><svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L10 14.9l-5.2 2.7 1-5.8L1.5 7.7l5.9-.9z"/></svg><svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L10 14.9l-5.2 2.7 1-5.8L1.5 7.7l5.9-.9z"/></svg><svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L10 14.9l-5.2 2.7 1-5.8L1.5 7.7l5.9-.9z"/></svg><svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L10 14.9l-5.2 2.7 1-5.8L1.5 7.7l5.9-.9z"/></svg></div>
+                    <p class="testi-result">Lost 14 kg in <span class="accent">12 weeks</span></p>
+                    <blockquote class="testi-quote">“I’d joined and quit three gyms before. Here, the coaches actually knew my name and my numbers. The diet plan was food I already eat at home.”</blockquote>
+                    <figcaption class="testi-who"><span class="avatar" aria-hidden="true">PS</span><span>Priya S.<small>Software engineer · Fat Loss</small></span></figcaption>
+                  </figure>
+                  <figure class="testi-slide" role="group" aria-roledescription="slide" aria-label="2 of 3">
+                    <div class="stars" aria-label="Rated 5 out of 5"><svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L10 14.9l-5.2 2.7 1-5.8L1.5 7.7l5.9-.9z"/></svg><svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L10 14.9l-5.2 2.7 1-5.8L1.5 7.7l5.9-.9z"/></svg><svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L10 14.9l-5.2 2.7 1-5.8L1.5 7.7l5.9-.9z"/></svg><svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L10 14.9l-5.2 2.7 1-5.8L1.5 7.7l5.9-.9z"/></svg><svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L10 14.9l-5.2 2.7 1-5.8L1.5 7.7l5.9-.9z"/></svg></div>
+                    <p class="testi-result">+8 kg lean muscle in <span class="accent">6 months</span></p>
+                    <blockquote class="testi-quote">“Skinny my whole life. Rahul sir fixed my form, my food and my sleep. My shirts don’t fit anymore — in the best way.”</blockquote>
+                    <figcaption class="testi-who"><span class="avatar" aria-hidden="true">AM</span><span>Arjun M.<small>College student · Muscle Gain</small></span></figcaption>
+                  </figure>
+                  <figure class="testi-slide" role="group" aria-roledescription="slide" aria-label="3 of 3">
+                    <div class="stars" aria-label="Rated 5 out of 5"><svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L10 14.9l-5.2 2.7 1-5.8L1.5 7.7l5.9-.9z"/></svg><svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L10 14.9l-5.2 2.7 1-5.8L1.5 7.7l5.9-.9z"/></svg><svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L10 14.9l-5.2 2.7 1-5.8L1.5 7.7l5.9-.9z"/></svg><svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L10 14.9l-5.2 2.7 1-5.8L1.5 7.7l5.9-.9z"/></svg><svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L10 14.9l-5.2 2.7 1-5.8L1.5 7.7l5.9-.9z"/></svg></div>
+                    <p class="testi-result">Deadlift 60 → <span class="accent">140 kg</span> in a year</p>
+                    <blockquote class="testi-quote">“At 41 I thought heavy lifting wasn’t for me. The women’s strength batch changed that. My back pain is gone and I feel unstoppable.”</blockquote>
+                    <figcaption class="testi-who"><span class="avatar" aria-hidden="true">NK</span><span>Neha K.<small>Teacher · Strength</small></span></figcaption>
+                  </figure>
+                </div>
+              </div>
+              <div class="testi-ctrl">
+                <div class="dots" id="testiDots" role="group" aria-label="Choose testimonial"></div>
+                <button type="button" class="icon-btn" id="testiPause" aria-label="Pause auto-rotation" aria-pressed="false">
+                  <svg class="i-pause" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M4 3h3v10H4zM9 3h3v10H9z"/></svg>
+                  <svg class="i-play" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" style="display:none"><path d="M4 2.5v11l9-5.5z"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 07 — PRICING + FINAL CTA (84–100%) -->
+      <section class="vsec" id="pricing" data-label="Join" aria-labelledby="priceTitle">
+        <div class="container">
+          <div class="sec-head center">
+            <p class="eyebrow reveal">Membership</p>
+            <h2 class="h2 split" id="priceTitle">The light at the end is <span class="accent">you.</span></h2>
+            <p class="lead reveal muted" style="--i:1">No joining-fee tricks. No hidden charges. Pick a plan, walk in, get to work.</p>
+          </div>
+
+          <div class="pricing-grid">
+            <article class="glass price reveal" style="--i:0" aria-labelledby="p1">
+              <h3 class="price-name" id="p1">Monthly</h3>
+              <div class="price-amt">₹1,999<small>/ month</small></div>
+              <div class="price-save">Flexible — cancel anytime</div>
+              <ul class="checks"><li>Full gym access, all zones</li><li>Locker &amp; shower access</li><li>1 fitness assessment</li><li>All group classes</li></ul>
+              <a href="#trial" class="btn btn-outline btn-block magnetic" data-plan="Monthly">Join Now</a>
+            </article>
+            <article class="glass price popular reveal" style="--i:1" aria-labelledby="p2">
+              <span class="pop-badge">Most Popular</span>
+              <h3 class="price-name" id="p2">Quarterly</h3>
+              <div class="price-amt">₹4,999<small>/ 3 months</small></div>
+              <div class="price-save">Save ₹998 vs monthly</div>
+              <ul class="checks"><li>Everything in Monthly</li><li>Personalised workout plan</li><li>Diet consultation</li><li>2 personal-training sessions</li><li>Steam &amp; recovery room</li></ul>
+              <a href="#trial" class="btn btn-primary btn-block magnetic" data-plan="Quarterly">Join Now</a>
+            </article>
+            <article class="glass price reveal" style="--i:2" aria-labelledby="p3">
+              <h3 class="price-name" id="p3">Yearly</h3>
+              <div class="price-amt">₹14,999<small>/ year</small></div>
+              <div class="price-save">Save ₹8,989 vs monthly</div>
+              <ul class="checks"><li>Everything in Quarterly</li><li>8 personal-training sessions</li><li>Monthly body-composition scan</li><li>Freeze up to 30 days</li><li>4 guest passes</li></ul>
+              <a href="#trial" class="btn btn-outline btn-block magnetic" data-plan="Yearly">Join Now</a>
+            </article>
+          </div>
+
+          <div class="trial" id="trial">
+            <div class="trial-copy">
+              <p class="eyebrow reveal">Free trial · No card needed</p>
+              <h2 class="h2 split" id="trialTitle">Book your <span class="accent">free trial.</span></h2>
+              <p class="lead reveal" style="--i:1">One full day in the Vault, a coach-guided session and a body-composition check. Zero pressure.</p>
+              <ul class="checks trial-perks reveal" style="--i:2"><li>Coach-guided first workout</li><li>Free body-composition analysis</li><li>Custom plan recommendation</li></ul>
+            </div>
+
+            <div class="reveal" style="--i:1">
+              <form class="glass form" id="trialForm" novalidate aria-labelledby="trialTitle">
+                <div class="field">
+                  <label for="fName">Full name</label>
+                  <input id="fName" name="name" type="text" autocomplete="name" placeholder="Your name" required aria-describedby="eName" />
+                  <span class="err" id="eName" aria-live="polite"></span>
+                </div>
+                <div class="field">
+                  <label for="fPhone">Phone / WhatsApp</label>
+                  <input id="fPhone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="98765 43210" required aria-describedby="ePhone" />
+                  <span class="err" id="ePhone" aria-live="polite"></span>
+                </div>
+                <div class="form-row">
+                  <div class="field">
+                    <label for="fGoal">Your goal</label>
+                    <select id="fGoal" name="goal" required aria-describedby="eGoal">
+                      <option value="">Select a goal</option>
+                      <option>Fat Loss</option>
+                      <option>Muscle Gain</option>
+                      <option>Strength &amp; Powerlifting</option>
+                      <option>Personal Training</option>
+                      <option>General Fitness</option>
+                    </select>
+                    <span class="err" id="eGoal" aria-live="polite"></span>
+                  </div>
+                  <div class="field">
+                    <label for="fTime">Preferred time</label>
+                    <select id="fTime" name="time" required aria-describedby="eTime">
+                      <option value="">Select a slot</option>
+                      <option>Early morning (5–8 AM)</option>
+                      <option>Morning (8–11 AM)</option>
+                      <option>Afternoon (12–4 PM)</option>
+                      <option>Evening (5–8 PM)</option>
+                      <option>Night (8–11 PM)</option>
+                    </select>
+                    <span class="err" id="eTime" aria-live="polite"></span>
+                  </div>
+                </div>
+                <input type="hidden" name="plan" id="fPlan" />
+                <p class="plan-note" id="planNote" hidden>Selected plan: <b id="planName"></b></p>
+                <button type="submit" class="btn btn-primary btn-block magnetic" id="fSubmit">Book My Free Trial</button>
+                <p class="form-legal">We’ll call or WhatsApp you within 24 hours. No spam, ever.</p>
+              </form>
+              <div class="glass form-success" id="formSuccess" role="status" tabindex="-1" hidden>
+                <div class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
+                <h3 class="h3">You’re in, <span id="successName">champ</span>!</h3>
+                <p class="muted">Your free trial request is booked. Our team will reach out within 24 hours to confirm your slot.</p>
+                <a class="btn btn-outline" id="successWa" target="_blank" rel="noopener">Confirm on WhatsApp</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div><!-- /.vault-content -->
+  </div><!-- /.vault -->
+
+  <!-- =====================================================================
+       AFTER THE SCROLL ZONE (normal flow)
+       ===================================================================== -->
+  <section class="faq" id="faq" aria-labelledby="faqTitle">
+    <div class="container faq-grid">
+      <div class="sec-head">
+        <p class="eyebrow reveal">FAQ</p>
+        <h2 class="h2 split" id="faqTitle">Questions? <span class="accent">Answered.</span></h2>
+        <p class="lead muted reveal" style="--i:1">Still unsure? Call us at <a data-cfg-href="tel" class="accent"><span data-cfg="phone">+91 00000 00000</span></a> or tap the WhatsApp button.</p>
+      </div>
+      <div class="acc" id="faqAcc">
+        <div class="acc-item reveal">
+          <h3><button class="acc-btn" aria-expanded="false" aria-controls="q1" id="q1b">What are your timings?<span class="pm" aria-hidden="true"></span></button></h3>
+          <div class="acc-panel" id="q1" role="region" aria-labelledby="q1b"><div><p>We’re open <strong data-cfg="hours">5 AM – 11 PM, all 7 days</strong>, including most public holidays. Peak hours are 6–9 AM and 6–9 PM.</p></div></div>
+        </div>
+        <div class="acc-item reveal">
+          <h3><button class="acc-btn" aria-expanded="false" aria-controls="q2" id="q2b">Is there a free trial?<span class="pm" aria-hidden="true"></span></button></h3>
+          <div class="acc-panel" id="q2" role="region" aria-labelledby="q2b"><div><p>Yes. Book a free one-day pass using the form above. It includes a coach-guided session and a body-composition check. No card, no pressure.</p></div></div>
+        </div>
+        <div class="acc-item reveal">
+          <h3><button class="acc-btn" aria-expanded="false" aria-controls="q3" id="q3b">Will a trainer guide me?<span class="pm" aria-hidden="true"></span></button></h3>
+          <div class="acc-panel" id="q3" role="region" aria-labelledby="q3b"><div><p>Always. Certified floor coaches are on duty during all opening hours at no extra cost. For a fully custom plan and 1-on-1 attention, choose Personal Training.</p></div></div>
+        </div>
+        <div class="acc-item reveal">
+          <h3><button class="acc-btn" aria-expanded="false" aria-controls="q4" id="q4b">Can I cancel or pause my membership?<span class="pm" aria-hidden="true"></span></button></h3>
+          <div class="acc-panel" id="q4" role="region" aria-labelledby="q4b"><div><p>Monthly plans can be cancelled anytime before the next cycle. Quarterly and yearly plans can be frozen (up to 30 days on yearly) for travel or medical reasons.</p></div></div>
+        </div>
+        <div class="acc-item reveal">
+          <h3><button class="acc-btn" aria-expanded="false" aria-controls="q5" id="q5b">Do you provide diet plans?<span class="pm" aria-hidden="true"></span></button></h3>
+          <div class="acc-panel" id="q5" role="region" aria-labelledby="q5b"><div><p>Yes. Quarterly and yearly members get a diet consultation, and every program includes a practical, Indian-food-friendly nutrition guide (veg and non-veg).</p></div></div>
+        </div>
+        <div class="acc-item reveal">
+          <h3><button class="acc-btn" aria-expanded="false" aria-controls="q6" id="q6b">Is there a women’s batch?<span class="pm" aria-hidden="true"></span></button></h3>
+          <div class="acc-panel" id="q6" role="region" aria-labelledby="q6b"><div><p>Yes — a women-only strength batch runs Monday to Saturday, 11 AM – 1 PM, led by a female coach. Women are of course welcome during all hours too.</p></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="footer" aria-labelledby="footTitle">
+  <h2 class="sr-only" id="footTitle">Contact &amp; information</h2>
+  <div class="container footer-grid">
+    <div>
+      <a href="#hero" class="logo" aria-label="IRONVAULT GYM — back to top">
+        <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="26" height="26" rx="3"/><circle cx="16" cy="16" r="6.5"/><path d="M16 9.5v-3M16 25.5v-3M9.5 16h-3M25.5 16h-3"/></svg>
+        <span data-cfg="name">IRONVAULT GYM</span>
+      </a>
+      <p class="muted" style="margin-top:14px" data-cfg="tagline">Enter The Vault. Leave Stronger.</p>
+      <div class="socials">
+        <a data-cfg-href="instagram" target="_blank" rel="noopener" aria-label="Instagram (opens in new tab)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg></a>
+        <a data-cfg-href="facebook" target="_blank" rel="noopener" aria-label="Facebook (opens in new tab)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M14 8h3V4h-3a4 4 0 0 0-4 4v3H7v4h3v6h4v-6h3l1-4h-4V8z"/></svg></a>
+        <a data-cfg-href="youtube" target="_blank" rel="noopener" aria-label="YouTube (opens in new tab)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="5" width="19" height="14" rx="4"/><path d="M10 9l5 3-5 3z" fill="currentColor"/></svg></a>
+      </div>
+    </div>
+    <div>
+      <h3>Visit</h3>
+      <address style="font-style:normal"><p data-cfg="address">Plot 00, Main Road</p><p data-cfg="city">Your City</p></address>
+    </div>
+    <div>
+      <h3>Contact &amp; Hours</h3>
+      <ul>
+        <li><a data-cfg-href="tel"><span data-cfg="phone">+91 00000 00000</span></a></li>
+        <li><a data-cfg-href="mail"><span data-cfg="email">hello@ironvault.example</span></a></li>
+        <li data-cfg="hours">5 AM – 11 PM, all 7 days</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Find us</h3>
+      <!-- Replace this placeholder with your Google Maps embed:
+           <iframe src="https://www.google.com/maps/embed?pb=..." loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="IRONVAULT GYM on Google Maps"></iframe> -->
+      <div class="map" role="img" aria-label="Map placeholder — Google Maps embed goes here">
+        <div><div class="pin"></div>Google Maps embed placeholder</div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-mega" aria-hidden="true">IRONVAULT</div>
+  <div class="footer-bottom">
+    <span>© <span id="year">2026</span> <span data-cfg="name">IRONVAULT GYM</span>. All rights reserved.</span>
+    <span>Est. <span data-cfg="established">2014</span> · Made with iron &amp; sweat.</span>
+  </div>
+</footer>
+
+<a class="wa-float" data-cfg-href="wa" target="_blank" rel="noopener" aria-label="Chat with us on WhatsApp (opens in new tab)">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 12a8.5 8.5 0 0 1-12.4 7.6L3.5 21l1.4-4.4A8.5 8.5 0 1 1 20.5 12z"/><path d="M9 8.5c0 3.6 2.9 6.5 6.5 6.5l1-1.6-2.1-1-1 .9a4.3 4.3 0 0 1-2.2-2.2l.9-1-1-2.1z" fill="currentColor" stroke-width="1"/></svg>
+</a>
+
+<!-- ============ LIBRARIES (CDN) ============ -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+<script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js" defer></script>
+
+<!-- ============ APP ============ -->
+<script>
+/* ============================================================================
+   CONFIG — edit your brand data here
+   ========================================================================== */
+const CONFIG = {
+  name: "IRONVAULT GYM",
+  tagline: "Enter The Vault. Leave Stronger.",
+  established: 2014,
+  yearsExperience: "10+",
+  members: "2500+",
+  trainers: "18",
+  equipmentPieces: "150+",
+  transformations: "800+",
+  city: "Your City",
+  address: "Plot 00, Main Road",
+  phone: "+91 00000 00000",
+  whatsapp: "+910000000000",
+  email: "hello@ironvault.example",
+  hours: "5 AM – 11 PM, all 7 days",
+  instagram: "https://instagram.com/",
+  facebook: "https://facebook.com/",
+  youtube: "https://youtube.com/",
+  founder: {
+    name: "Vikram Rao",
+    initials: "VR",
+    role: "Founder & Head Coach",
+    quote: "I didn’t build a gym, I built the place I wished existed when I started. Show up, trust the process — we’ll handle the rest."
+  },
+
+  /* Image sequence (scroll-scrubbed). Files: path + zero-padded index + ext */
+  frames: { path: "frames/frame_", ext: ".webp", count: 241, pad: 4, firstPassStep: 4 },
+  /* Fallback video if frames fail */
+  video: "hero.mp4",
+  /* Video progress at the start of each of the 7 sections (+ end = 1) */
+  timeline: [0, 0.10, 0.25, 0.42, 0.58, 0.72, 0.84, 1],
+  /* How dark the video is behind each section (0 = none, 1 = black) */
+  dim: [0.12, 0.45, 0.42, 0.5, 0.5, 0.5, 0.38],
+  /* Scrub smoothing (0.05 = very floaty, 1 = instant) */
+  smoothing: 0.12,
+  maxDPR: 2,
+  /* Optional: URL that accepts a JSON POST of the trial form. Empty = demo. */
+  formEndpoint: ""
+};
+
+(() => {
+  "use strict";
+
+  /* ---------- helpers ---------- */
+  const $ = (s, c = document) => c.querySelector(s);
+  const $$ = (s, c = document) => Array.from(c.querySelectorAll(s));
+  const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+  const lerp = (a, b, t) => a + (b - a) * t;
+  const get = (obj, path) => path.split(".").reduce((o, k) => (o == null ? o : o[k]), obj);
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+  const passive = { passive: true };
+
+  const state = {
+    vh: window.innerHeight,
+    scrollY: window.scrollY,
+    progress: 0,        // video progress 0..1 (target)
+    lenis: null,
+    gsap: null,
+    ST: null
+  };
+
+  /* ==========================================================================
+     applyConfig — fill [data-cfg] / [data-cfg-href] from CONFIG
+     ======================================================================== */
+  function applyConfig() {
+    $$("[data-cfg]").forEach(el => {
+      const v = get(CONFIG, el.dataset.cfg);
+      if (v != null) el.textContent = v;
+    });
+    const waNum = String(CONFIG.whatsapp).replace(/\D/g, "");
+    const waMsg = encodeURIComponent(`Hi ${CONFIG.name}! I'd like to know more about memberships.`);
+    const hrefs = {
+      tel: "tel:" + String(CONFIG.phone).replace(/[^\d+]/g, ""),
+      mail: "mailto:" + CONFIG.email,
+      wa: `https://wa.me/${waNum}?text=${waMsg}`,
+      instagram: CONFIG.instagram, facebook: CONFIG.facebook, youtube: CONFIG.youtube
+    };
+    $$("[data-cfg-href]").forEach(el => { const h = hrefs[el.dataset.cfgHref]; if (h) el.href = h; });
+    const y = $("#year"); if (y) y.textContent = new Date().getFullYear();
+  }
+
+  /* ==========================================================================
+     initLoader — red bar + percentage
+     ======================================================================== */
+  function initLoader() {
+    const el = $("#loader"), bar = $("#loaderBar"), pct = $("#loaderPct");
+    let done = false, shown = 0;
+    const api = {
+      set(p) {
+        if (done) return;
+        const v = Math.round(clamp(p, 0, 1) * 100);
+        if (v === shown) return;
+        shown = v;
+        bar.style.transform = `scaleX(${v / 100})`;
+        pct.textContent = v + "%";
+        el.setAttribute("aria-valuenow", v);
+      },
+      done() {
+        if (done) return;
+        api.set(1); done = true;
+        setTimeout(() => {
+          el.classList.add("is-done");
+          el.setAttribute("aria-hidden", "true");
+          document.dispatchEvent(new CustomEvent("vault:ready"));
+        }, 250);
+      }
+    };
+    // Safety net: never trap the user behind the loader
+    setTimeout(() => api.done(), 15000);
+    return api;
+  }
+
+  /* ==========================================================================
+     initSmoothScroll — Lenis wired to GSAP ScrollTrigger
+     ======================================================================== */
+  function initSmoothScroll() {
+    const gsap = window.gsap, ST = window.ScrollTrigger;
+    if (gsap && ST) {
+      gsap.registerPlugin(ST);
+      ST.config({ ignoreMobileResize: true });
+      state.gsap = gsap; state.ST = ST;
+    }
+    if (reduceMotion || typeof window.Lenis !== "function") return;
+
+    const lenis = new window.Lenis({
+      duration: 1.15,
+      easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      smoothWheel: true
+    });
+    state.lenis = lenis;
+
+    if (gsap && ST) {
+      lenis.on("scroll", ST.update);
+      gsap.ticker.add(time => lenis.raf(time * 1000));
+      gsap.ticker.lagSmoothing(0);
+    } else {
+      const raf = t => { lenis.raf(t); requestAnimationFrame(raf); };
+      requestAnimationFrame(raf);
+    }
+  }
+
+  function scrollToTarget(target, opts = {}) {
+    const el = typeof target === "string" ? $(target) : target;
+    if (!el) return;
+    const offset = opts.offset ?? 0;
+    if (state.lenis) {
+      state.lenis.scrollTo(el, { offset, duration: opts.duration ?? 1.4, easing: opts.easing, lock: false });
+    } else {
+      const y = el.getBoundingClientRect().top + window.scrollY + offset;
+      window.scrollTo({ top: y, behavior: reduceMotion ? "auto" : "smooth" });
+    }
+  }
+
+  /* ==========================================================================
+     initCanvasSequence — progressive frame preloading + lerped canvas scrub
+     (falls back to <video> scrubbing if frames fail)
+     ======================================================================== */
+  function initCanvasSequence(loader) {
+    const stage = $("#stage"), canvas = $("#seq"), ctx = canvas.getContext("2d", { alpha: false });
+    const video = $("#fallbackVideo");
+    const { path, ext, count, pad, firstPassStep } = CONFIG.frames;
+    const src = i => path + String(i + 1).padStart(pad, "0") + ext;
+
+    const frames = new Array(count);       // Image objects
+    const loaded = new Uint8Array(count);  // 1 = ready
+    let current = 0, lastDrawn = -1, useVideo = false, dirty = true;
+    let errors = 0, firstPassDone = 0;
+
+    // First pass: every Nth frame (instant start). Second pass: the rest.
+    const firstPass = [], secondPass = [];
+    for (let i = 0; i < count; i++) (i % firstPassStep === 0 || i === count - 1 ? firstPass : secondPass).push(i);
+
+    function loadFrame(i) {
+      return new Promise(resolve => {
+        const img = new Image();
+        img.decoding = "async";
+        img.onload = () => { frames[i] = img; loaded[i] = 1; dirty = true; resolve(true); };
+        img.onerror = () => { errors++; resolve(false); };
+        img.src = src(i);
+      });
+    }
+
+    /* Load a list with limited concurrency so we don't choke the network */
+    function loadQueue(list, concurrency, onEach) {
+      let idx = 0;
+      const worker = async () => {
+        while (idx < list.length && !useVideo) {
+          const i = list[idx++];
+          const ok = await loadFrame(i);
+          onEach && onEach(i, ok);
+        }
+      };
+      return Promise.all(Array.from({ length: concurrency }, worker));
+    }
+
+    function switchToVideo() {
+      if (useVideo) return;
+      useVideo = true;
+      stage.classList.add("use-video");
+      video.preload = "auto";
+      video.src = CONFIG.video;
+      const ready = () => loader.done();
+      video.addEventListener("loadeddata", ready, { once: true });
+      video.addEventListener("error", ready, { once: true });
+      video.load();
+      // iOS needs a play/pause before seeking renders frames
+      const p = video.play(); if (p && p.then) p.then(() => video.pause()).catch(() => {});
+    }
+
+    async function start() {
+      // Probe the very first frame: if it fails, the sequence is missing → video fallback
+      const ok = await loadFrame(0);
+      if (!ok) return switchToVideo();
+      firstPassDone = 1;
+      loader.set(1 / firstPass.length);
+      await loadQueue(firstPass.slice(1), 8, () => {
+        firstPassDone++;
+        loader.set(firstPassDone / firstPass.length);
+        if (errors > firstPass.length * 0.3) switchToVideo();
+      });
+      if (useVideo) return;
+      loader.done();
+      // Fill the gaps in the background, when the browser is idle-ish
+      const idle = window.requestIdleCallback || (cb => setTimeout(cb, 200));
+      idle(() => loadQueue(secondPass, 4));
+    }
+
+    /* Canvas sizing — devicePixelRatio aware */
+    function resize() {
+      const dpr = Math.min(window.devicePixelRatio || 1, CONFIG.maxDPR);
+      const w = stage.clientWidth, h = stage.clientHeight;
+      canvas.width = Math.round(w * dpr);
+      canvas.height = Math.round(h * dpr);
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = "high";
+      lastDrawn = -1; dirty = true;
+    }
+
+    /* Nearest frame that has actually loaded */
+    function nearestLoaded(i) {
+      if (loaded[i]) return i;
+      for (let d = 1; d < count; d++) {
+        if (i - d >= 0 && loaded[i - d]) return i - d;
+        if (i + d < count && loaded[i + d]) return i + d;
+      }
+      return -1;
+    }
+
+    /* object-fit: cover, centred */
+    function draw(i) {
+      const img = frames[i]; if (!img) return;
+      const cw = canvas.width, ch = canvas.height;
+      const iw = img.naturalWidth, ih = img.naturalHeight;
+      const s = Math.max(cw / iw, ch / ih);
+      const w = iw * s, h = ih * s;
+      ctx.drawImage(img, (cw - w) / 2, (ch - h) / 2, w, h);
+      lastDrawn = i;
+    }
+
+    /* Called every animation frame by the main loop */
+    function render() {
+      const target = state.progress * (count - 1);
+      const k = reduceMotion ? 1 : CONFIG.smoothing;
+      current = Math.abs(target - current) < 0.01 ? target : lerp(current, target, k);
+
+      if (useVideo) {
+        const d = video.duration;
+        if (d && !video.seeking) {
+          const t = (current / (count - 1)) * Math.max(0, d - 0.05);
+          if (Math.abs(video.currentTime - t) > 0.03) video.currentTime = t;
+        }
+        return;
+      }
+      const want = nearestLoaded(Math.round(current));
+      if (want < 0) return;
+      if (want !== lastDrawn || dirty) { draw(want); dirty = false; }
+    }
+
+    let rq = 0;
+    window.addEventListener("resize", () => { cancelAnimationFrame(rq); rq = requestAnimationFrame(resize); }, passive);
+    resize();
+    start();
+    return { render };
+  }
+
+  /* ==========================================================================
+     initScrollSections — scroll→video mapping, reveals, split text, parallax,
+     hero scrub, nav state, progress bar, section index
+     ======================================================================== */
+  function initScrollSections() {
+    const vault = $("#vault");
+    const secs = $$(".vault-content > .vsec");
+    const nav = $("#nav"), bar = $("#scrollBar"), dimEl = $("#stageDim");
+    const si = $("#sectionIndex"), siCur = $("#siCur"), siLabel = $("#siLabel"), siTotal = $("#siTotal");
+    const navLinks = $$("[data-nav]");
+    siTotal.textContent = String(secs.length).padStart(2, "0");
+
+    let zoneTop = 0, zoneScroll = 1, knots = [], secTops = [], docMax = 1;
+    let active = -1, dim = CONFIG.dim[0];
+
+    /* Map each section to a video keyframe → piecewise-linear scroll→progress.
+       This keeps the video in sync with content no matter how tall it gets. */
+    function layout() {
+      state.vh = window.innerHeight;
+      const sy = window.scrollY;
+      zoneTop = vault.getBoundingClientRect().top + sy;
+      zoneScroll = Math.max(1, vault.offsetHeight - state.vh);
+      secTops = secs.map(s => s.getBoundingClientRect().top + sy - zoneTop);
+      knots = secTops.map((t, i) => (i === 0 ? 0 : clamp(t - state.vh * 0.45, 0, zoneScroll)));
+      knots.push(zoneScroll);
+      for (let i = 1; i < knots.length; i++) knots[i] = Math.max(knots[i], knots[i - 1] + 1);
+      docMax = Math.max(1, document.documentElement.scrollHeight - state.vh);
+      update(sy, true);
+    }
+
+    function mapProgress(s) {
+      const tl = CONFIG.timeline;
+      if (s <= 0) return 0;
+      for (let i = 0; i < knots.length - 1; i++) {
+        if (s < knots[i + 1]) {
+          const t = (s - knots[i]) / (knots[i + 1] - knots[i]);
+          return lerp(tl[i], tl[i + 1], t);
+        }
+      }
+      return 1;
+    }
+
+    function update(y, force) {
+      const s = clamp(y - zoneTop, 0, zoneScroll);
+      state.progress = mapProgress(s);
+      bar.style.transform = `scaleX(${clamp(y / docMax, 0, 1)})`;
+      nav.classList.toggle("is-scrolled", y > 40);
+
+      // Active section
+      let idx = 0;
+      const probe = y - zoneTop + state.vh * 0.5;
+      for (let i = 0; i < secTops.length; i++) if (probe >= secTops[i]) idx = i;
+      const inZone = y - zoneTop < zoneScroll + state.vh * 0.3;
+      si.classList.toggle("is-hidden", !inZone);
+      if (idx !== active || force) {
+        active = idx;
+        siCur.textContent = String(idx + 1).padStart(2, "0");
+        siLabel.textContent = secs[idx].dataset.label || "";
+        const id = secs[idx].id;
+        navLinks.forEach(a => a.classList.toggle("is-active", a.dataset.nav === id || (id === "trainers" && a.dataset.nav === "programs")));
+      }
+    }
+
+    /* Dim layer eases between per-section targets (called each frame) */
+    function renderDim() {
+      const target = CONFIG.dim[active] ?? 0.4;
+      if (Math.abs(target - dim) < 0.002) return;
+      dim = lerp(dim, target, reduceMotion ? 1 : 0.06);
+      dimEl.style.opacity = dim.toFixed(3);
+    }
+
+    /* ---- Reveals: fade/slide in AND out at scroll ranges ---- */
+    const reveals = $$(".reveal");
+    if (reduceMotion) {
+      reveals.forEach(el => el.classList.add("is-in"));
+    } else if (state.ST) {
+      reveals.forEach(el => state.ST.create({
+        trigger: el, start: "top 92%", end: "bottom 6%",
+        toggleClass: { targets: el, className: "is-in" }
+      }));
+    } else {
+      const io = new IntersectionObserver(entries => entries.forEach(e => e.target.classList.toggle("is-in", e.isIntersecting)),
+        { rootMargin: "-6% 0px -8% 0px" });
+      reveals.forEach(el => io.observe(el));
+    }
+
+    /* ---- Split-text headline reveals (word stagger) ---- */
+    function splitWords(el) {
+      const walk = node => {
+        Array.from(node.childNodes).forEach(child => {
+          if (child.nodeType === 3) {
+            const frag = document.createDocumentFragment();
+            child.textContent.split(/(\s+)/).forEach(part => {
+              if (!part) return;
+              if (/^\s+$/.test(part)) { frag.appendChild(document.createTextNode(" ")); return; }
+              const w = document.createElement("span"); w.className = "w";
+              const wi = document.createElement("span"); wi.className = "wi"; wi.textContent = part;
+              w.appendChild(wi); frag.appendChild(w);
+            });
+            child.replaceWith(frag);
+          } else if (child.nodeType === 1) walk(child);
+        });
+      };
+      walk(el);
+      return $$(".wi", el);
+    }
+
+    const gsap = state.gsap, ST = state.ST;
+    if (gsap && ST && !reduceMotion) {
+      $$(".split").forEach(h => {
+        const words = splitWords(h);
+        if (h.id === "heroTitle") {
+          gsap.set(words, { yPercent: 70, opacity: 0, rotate: 3 });
+          return; // played after loader
+        }
+        gsap.fromTo(words, { yPercent: 70, opacity: 0, rotate: 3 }, {
+          yPercent: 0, opacity: 1, rotate: 0, duration: 1, ease: "power4.out", stagger: 0.06,
+          scrollTrigger: { trigger: h, start: "top 88%", end: "bottom 4%", toggleActions: "play reverse play reverse" }
+        });
+      });
+
+      /* Hero text fades & scales away as the camera pushes toward the door */
+      gsap.to("#heroInner", {
+        autoAlpha: 0, scale: 0.86, y: -60, ease: "none",
+        scrollTrigger: { trigger: "#hero", start: "top top", end: "bottom 25%", scrub: 0.6 }
+      });
+
+      /* Parallax on cards (desktop only) */
+      ST.matchMedia({
+        "(min-width: 961px)": () => {
+          $$("[data-parallax]").forEach(el => {
+            const sp = parseFloat(el.dataset.parallax) || 0.5;
+            gsap.fromTo(el, { y: 70 * sp }, {
+              y: -70 * sp, ease: "none",
+              scrollTrigger: { trigger: el, start: "top bottom", end: "bottom top", scrub: true }
+            });
+          });
+        }
+      });
+
+      ST.addEventListener("refresh", layout);
+    }
+
+    /* Hero intro (after loader) */
+    document.addEventListener("vault:ready", () => {
+      const heroEls = $$(".hero-anim");
+      if (gsap && !reduceMotion) {
+        const tl = gsap.timeline({ defaults: { ease: "power4.out" } });
+        tl.to("#heroTitle .wi", { yPercent: 0, opacity: 1, rotate: 0, duration: 1.2, stagger: 0.08 })
+          .fromTo(heroEls, { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 1, stagger: 0.1 }, "-=0.8");
+      } else {
+        heroEls.forEach(el => (el.style.opacity = 1));
+      }
+      layout();
+      if (ST) ST.refresh();
+    }, { once: true });
+
+    window.addEventListener("resize", () => requestAnimationFrame(layout), passive);
+    window.addEventListener("load", layout, { once: true });
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => (ST ? ST.refresh() : layout()));
+    layout();
+
+    return { update, renderDim, layout };
+  }
+
+  /* ==========================================================================
+     initCounters — count up when visible
+     ======================================================================== */
+  function initCounters() {
+    const els = $$("[data-count]");
+    const parse = raw => { const m = String(raw).match(/^(\d+)(.*)$/); return m ? { n: +m[1], suf: m[2] } : { n: 0, suf: String(raw) }; };
+    const fmt = n => n.toLocaleString("en-IN");
+    els.forEach(el => {
+      const { n, suf } = parse(CONFIG[el.dataset.count]);
+      el.dataset.n = n; el.dataset.suf = suf;
+      el.innerHTML = `<span class="v">${reduceMotion ? fmt(n) : 0}</span><span class="suf">${suf}</span>`;
+      el.setAttribute("aria-label", fmt(n) + suf);
+    });
+    if (reduceMotion) return;
+    const run = el => {
+      const v = $(".v", el), n = +el.dataset.n, dur = 1800, t0 = performance.now();
+      const step = now => {
+        const t = clamp((now - t0) / dur, 0, 1), e = 1 - Math.pow(1 - t, 4);
+        v.textContent = fmt(Math.round(n * e));
+        if (t < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    };
+    const io = new IntersectionObserver(entries => entries.forEach(e => {
+      if (e.isIntersecting) { run(e.target); io.unobserve(e.target); }
+    }), { threshold: 0.5 });
+    els.forEach(el => io.observe(el));
+  }
+
+  /* ==========================================================================
+     initSlider — before/after comparison (mouse, touch, keyboard)
+     ======================================================================== */
+  function placeholderImg(kind) {
+    const before = kind === "before";
+    const body = before
+      ? "M300 250c-110 0-165 55-172 150l-14 300h372l-14-300c-7-95-62-150-172-150z"
+      : "M168 285c50-30 214-30 264 0l-28 140c-10 50-22 130-26 275H222c-4-145-16-225-26-275z";
+    const svg = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 700'>
+      <defs><linearGradient id='g' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='${before ? "#262626" : "#2a0a05"}'/><stop offset='1' stop-color='#080808'/></linearGradient>
+      <radialGradient id='l' cx='.5' cy='.25' r='.6'><stop offset='0' stop-color='${before ? "#777" : "#ff3b1f"}' stop-opacity='.35'/><stop offset='1' stop-color='#000' stop-opacity='0'/></radialGradient></defs>
+      <rect width='600' height='700' fill='url(#g)'/><rect width='600' height='700' fill='url(#l)'/>
+      <g fill='${before ? "#3b3b3b" : "#4a1a12"}'><circle cx='300' cy='190' r='52'/><path d='${body}'/></g>
+      <text x='300' y='650' text-anchor='middle' font-family='Arial,sans-serif' font-size='18' letter-spacing='5' fill='#8a8a8a'>${before ? "BEFORE" : "AFTER"} PHOTO PLACEHOLDER</text></svg>`;
+    return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
+  }
+
+  function initSlider() {
+    const ba = $("#ba"), knob = $("#baKnob");
+    if (!ba) return;
+    $("#baBefore").src = placeholderImg("before");
+    $("#baAfter").src = placeholderImg("after");
+    let pos = 50, dragging = false;
+    const set = p => {
+      pos = clamp(p, 0, 100);
+      ba.style.setProperty("--pos", pos + "%");
+      knob.setAttribute("aria-valuenow", Math.round(pos));
+      knob.setAttribute("aria-valuetext", Math.round(pos) + "% before");
+    };
+    const fromEvent = e => { const r = ba.getBoundingClientRect(); set(((e.clientX - r.left) / r.width) * 100); };
+    ba.addEventListener("pointerdown", e => { dragging = true; ba.setPointerCapture(e.pointerId); fromEvent(e); });
+    ba.addEventListener("pointermove", e => { if (dragging) fromEvent(e); }, passive);
+    const stop = () => { dragging = false; };
+    ba.addEventListener("pointerup", stop); ba.addEventListener("pointercancel", stop);
+    knob.addEventListener("keydown", e => {
+      const map = { ArrowLeft: -5, ArrowDown: -5, ArrowRight: 5, ArrowUp: 5, PageDown: -20, PageUp: 20 };
+      if (e.key in map) { set(pos + map[e.key]); e.preventDefault(); }
+      else if (e.key === "Home") { set(0); e.preventDefault(); }
+      else if (e.key === "End") { set(100); e.preventDefault(); }
+    });
+    set(50);
+  }
+
+  /* ==========================================================================
+     initTestimonials — auto-rotating, pausable carousel
+     ======================================================================== */
+  function initTestimonials() {
+    const root = $("#testi"), track = $("#testiTrack"), dotsWrap = $("#testiDots"), pauseBtn = $("#testiPause");
+    if (!root) return;
+    const slides = $$(".testi-slide", track);
+    let i = 0, timer = 0, userPaused = reduceMotion, hover = false, visible = false;
+    const dots = slides.map((_, n) => {
+      const b = document.createElement("button");
+      b.type = "button"; b.setAttribute("aria-label", `Show testimonial ${n + 1}`);
+      b.addEventListener("click", () => go(n));
+      dotsWrap.appendChild(b); return b;
+    });
+    function go(n) {
+      i = (n + slides.length) % slides.length;
+      track.style.transform = `translateX(${-i * 100}%)`;
+      slides.forEach((s, k) => { const on = k === i; s.toggleAttribute("inert", !on); s.setAttribute("aria-hidden", String(!on)); });
+      dots.forEach((d, k) => d.setAttribute("aria-current", String(k === i)));
+    }
+    function tick() {
+      clearTimeout(timer);
+      if (!userPaused && !hover && visible) timer = setTimeout(() => { go(i + 1); tick(); }, 5500);
+    }
+    function setPaused(p) {
+      userPaused = p;
+      pauseBtn.setAttribute("aria-pressed", String(p));
+      pauseBtn.setAttribute("aria-label", p ? "Play auto-rotation" : "Pause auto-rotation");
+      $(".i-pause", pauseBtn).style.display = p ? "none" : "";
+      $(".i-play", pauseBtn).style.display = p ? "" : "none";
+      tick();
+    }
+    pauseBtn.addEventListener("click", () => setPaused(!userPaused));
+    root.addEventListener("pointerenter", () => { hover = true; tick(); });
+    root.addEventListener("pointerleave", () => { hover = false; tick(); });
+    root.addEventListener("focusin", () => { hover = true; tick(); });
+    root.addEventListener("focusout", () => { hover = false; tick(); });
+    new IntersectionObserver(([e]) => { visible = e.isIntersecting; tick(); }).observe(root);
+    // Swipe support
+    let sx = null;
+    track.addEventListener("touchstart", e => { sx = e.touches[0].clientX; }, passive);
+    track.addEventListener("touchend", e => {
+      if (sx == null) return; const dx = e.changedTouches[0].clientX - sx; sx = null;
+      if (Math.abs(dx) > 40) { go(i + (dx < 0 ? 1 : -1)); tick(); }
+    }, passive);
+    go(0); setPaused(userPaused);
+  }
+
+  /* ==========================================================================
+     initForm — validation + success state
+     ======================================================================== */
+  function initForm() {
+    const form = $("#trialForm"), ok = $("#formSuccess");
+    if (!form) return;
+    const f = { name: $("#fName"), phone: $("#fPhone"), goal: $("#fGoal"), time: $("#fTime") };
+    const rules = {
+      name: v => v.trim().length >= 2 || "Please enter your name (min. 2 characters).",
+      phone: v => /^(?:\+?91)?[6-9]\d{9}$/.test(v.replace(/[\s()-]/g, "").replace(/^0/, "")) || "Enter a valid 10-digit Indian mobile number.",
+      goal: v => !!v || "Please choose your goal.",
+      time: v => !!v || "Please choose a preferred time."
+    };
+    const check = key => {
+      const el = f[key], res = rules[key](el.value), err = $("#" + el.getAttribute("aria-describedby"));
+      const bad = res !== true;
+      el.setAttribute("aria-invalid", String(bad));
+      err.textContent = bad ? res : "";
+      return !bad;
+    };
+    Object.keys(f).forEach(k => {
+      f[k].addEventListener("blur", () => { if (f[k].value) check(k); });
+      f[k].addEventListener("input", () => { if (f[k].getAttribute("aria-invalid") === "true") check(k); });
+    });
+
+    // Plan buttons & program links pre-fill the form
+    $$("[data-plan]").forEach(b => b.addEventListener("click", () => {
+      $("#fPlan").value = b.dataset.plan; $("#planName").textContent = b.dataset.plan; $("#planNote").hidden = false;
+    }));
+    $$("[data-goal]").forEach(a => a.addEventListener("click", () => { f.goal.value = a.dataset.goal; check("goal"); }));
+
+    form.addEventListener("submit", async e => {
+      e.preventDefault();
+      const results = Object.keys(f).map(check);
+      if (results.includes(false)) { f[Object.keys(f)[results.indexOf(false)]].focus(); return; }
+      const btn = $("#fSubmit"); btn.disabled = true; btn.textContent = "Booking…";
+      const data = Object.fromEntries(new FormData(form).entries());
+      try {
+        if (CONFIG.formEndpoint) {
+          const r = await fetch(CONFIG.formEndpoint, { method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify(data) });
+          if (!r.ok) throw new Error("Request failed");
+        } else {
+          await new Promise(r => setTimeout(r, 700)); // demo mode
+        }
+        $("#successName").textContent = data.name.trim().split(/\s+/)[0];
+        const msg = `Hi ${CONFIG.name}! I just booked a free trial.\nName: ${data.name}\nPhone: ${data.phone}\nGoal: ${data.goal}\nTime: ${data.time}${data.plan ? "\nPlan: " + data.plan : ""}`;
+        $("#successWa").href = `https://wa.me/${String(CONFIG.whatsapp).replace(/\D/g, "")}?text=${encodeURIComponent(msg)}`;
+        form.hidden = true; ok.hidden = false; ok.focus({ preventScroll: true });
+        form.reset();
+        if (state.ST) state.ST.refresh();
+      } catch (err) {
+        $("#eTime").textContent = "Something went wrong. Please try again or WhatsApp us.";
+      } finally {
+        btn.disabled = false; btn.textContent = "Book My Free Trial";
+      }
+    });
+  }
+
+  /* ==========================================================================
+     initFAQ — accessible accordion
+     ======================================================================== */
+  function initFAQ() {
+    $$(".acc-btn").forEach(btn => btn.addEventListener("click", () => {
+      const open = btn.getAttribute("aria-expanded") === "true";
+      btn.setAttribute("aria-expanded", String(!open));
+      btn.closest(".acc-item").classList.toggle("is-open", !open);
+      if (state.ST) setTimeout(() => state.ST.refresh(), 480);
+    }));
+  }
+
+  /* ==========================================================================
+     initNav — mobile menu, anchor scrolling, "Watch the Tour"
+     ======================================================================== */
+  function initNav() {
+    const burger = $("#burger"), menu = $("#mobileMenu");
+    const setMenu = open => {
+      burger.setAttribute("aria-expanded", String(open));
+      burger.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+      menu.classList.toggle("is-open", open);
+      menu.setAttribute("aria-hidden", String(!open));
+      menu.toggleAttribute("inert", !open);
+      if (state.lenis) open ? state.lenis.stop() : state.lenis.start();
+      else document.body.style.overflow = open ? "hidden" : "";
+      if (open) setTimeout(() => $("a", menu).focus(), 50);
+    };
+    burger.addEventListener("click", () => setMenu(burger.getAttribute("aria-expanded") !== "true"));
+    document.addEventListener("keydown", e => { if (e.key === "Escape" && menu.classList.contains("is-open")) { setMenu(false); burger.focus(); } });
+
+    // Smooth anchor scrolling via Lenis
+    document.addEventListener("click", e => {
+      const a = e.target.closest('a[href^="#"]');
+      if (!a) return;
+      const id = a.getAttribute("href");
+      if (id.length < 2) return;
+      const target = $(id);
+      if (!target) return;
+      e.preventDefault();
+      if (menu.classList.contains("is-open")) setMenu(false);
+      const offset = id === "#hero" ? 0 : (id === "#trial" ? -90 : 0);
+      scrollToTarget(target, { offset });
+      if (id === "#trial") setTimeout(() => $("#fName").focus({ preventScroll: true }), state.lenis ? 1500 : 600);
+    });
+
+    // "Watch the Tour": slow cinematic auto-scroll through the vault
+    $("#tourBtn").addEventListener("click", () => {
+      if (state.lenis) {
+        state.lenis.scrollTo("#pricing", { duration: 16, easing: t => -(Math.cos(Math.PI * t) - 1) / 2 });
+      } else {
+        scrollToTarget("#pricing");
+      }
+    });
+  }
+
+  /* ==========================================================================
+     initCursor — red dot + trailing ring, magnetic buttons (desktop only)
+     ======================================================================== */
+  function initCursor() {
+    if (!finePointer || reduceMotion) return { render() {} };
+    const dot = $(".cursor-dot"), ring = $(".cursor-ring"), root = document.documentElement;
+    let mx = -100, my = -100, rx = -100, ry = -100, seen = false;
+    window.addEventListener("pointermove", e => {
+      mx = e.clientX; my = e.clientY;
+      dot.style.transform = `translate3d(${mx}px,${my}px,0)`;
+      if (!seen) { seen = true; rx = mx; ry = my; root.classList.add("has-cursor"); }
+    }, passive);
+    document.addEventListener("pointerleave", () => root.classList.remove("has-cursor"));
+    document.addEventListener("pointerenter", () => seen && root.classList.add("has-cursor"));
+    document.addEventListener("pointerover", e => {
+      root.classList.toggle("cursor-hover", !!e.target.closest("a,button,[role='slider'],input,select,.program,.trainer"));
+    }, passive);
+
+    // Magnetic CTAs
+    $$(".magnetic").forEach(el => {
+      el.addEventListener("pointermove", e => {
+        const r = el.getBoundingClientRect();
+        const x = (e.clientX - r.left - r.width / 2) * 0.28, y = (e.clientY - r.top - r.height / 2) * 0.35;
+        el.style.transform = `translate3d(${x}px,${y}px,0)`;
+      }, passive);
+      el.addEventListener("pointerleave", () => {
+        el.style.transition = "transform .5s cubic-bezier(.22,1,.36,1)";
+        el.style.transform = "";
+        setTimeout(() => (el.style.transition = ""), 500);
+      });
+    });
+
+    return {
+      render() {
+        if (!seen) return;
+        rx = lerp(rx, mx, 0.18); ry = lerp(ry, my, 0.18);
+        ring.style.transform = `translate3d(${rx.toFixed(1)}px,${ry.toFixed(1)}px,0)`;
+      }
+    };
+  }
+
+  /* ==========================================================================
+     BOOT
+     ======================================================================== */
+  function boot() {
+    applyConfig();
+    const loader = initLoader();
+    initSmoothScroll();
+    const seq = initCanvasSequence(loader);
+    const sections = initScrollSections();
+    initCounters();
+    initSlider();
+    initTestimonials();
+    initForm();
+    initFAQ();
+    initNav();
+    const cursor = initCursor();
+
+    // Single rAF loop — reads scroll once per frame (no layout thrashing)
+    let lastY = -1;
+    const loop = () => {
+      const y = window.scrollY;
+      if (y !== lastY) { lastY = y; sections.update(y); }
+      sections.renderDim();
+      seq.render();
+      cursor.render();
+      requestAnimationFrame(loop);
+    };
+    requestAnimationFrame(loop);
+  }
+
+  // Libraries are loaded with `defer`; wait for them (DOMContentLoaded fires after deferred scripts)
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot, { once: true });
+  else boot();
+})();
+</script>
+</body>
+</html>
